@@ -705,7 +705,7 @@ setAnnouncements(res.data);
                 onClick={() => { setActiveSection('overview'); setSidebarOpen(false); }}
                 style={{ background: activeSection === 'overview' ? '#fff' : 'transparent', color: activeSection === 'overview' ? '#010662' : '#fff', fontWeight: activeSection === 'overview' ? 700 : 500, borderRadius: 8, margin: '8px 12px', padding: '12px 18px', cursor: 'pointer', transition: 'background 0.2s' }}
               >
-                📊 Dashboard Overview
+                📊 Admin Dashboard
               </li>
               <li
                 className={activeSection === 'inbox' ? 'active' : ''}
@@ -749,6 +749,28 @@ setAnnouncements(res.data);
               >
                 📊 Reports
               </li>
+              <li 
+              onClick={() => { 
+                setSidebarOpen(false); 
+                handleLogout(); 
+              }}
+              style={{ 
+                background: '#ff4757', 
+                color: '#fff', 
+                fontWeight: 700, 
+                borderRadius: 8, 
+                margin: '16px 12px 8px 12px', 
+                padding: '12px 1px', 
+                cursor: 'pointer', 
+                transition: 'all 0.2s',
+                border: 'none',
+                width: 'calc(100% - 14px)',
+                textAlign: 'center'
+              }}
+              className="logout-button"
+            >
+              Logout
+            </li>
             </ul>
           </nav>
 
@@ -775,7 +797,18 @@ setAnnouncements(res.data);
         <div className="admin-main-content" style={{ marginLeft: sidebarOpen ? 260 : 0, transition: 'margin-left 0.3s' }}>
           <header className="admin-header" style={{ background: 'linear-gradient(90deg, #010662 0%, #38b2ac 100%)', color: '#fff', borderBottom: '2px solid #010662', boxShadow: '0 2px 8px rgba(1,6,98,0.08)' }}>
             <div className="admin-header-row" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-              <h2 style={{margin: '10px 0 10px 60px', fontSize:'1.25rem', color:'#fff', fontWeight:700, fontFamily: 'sans-serif'}}>Admin Dashboard</h2>
+              <img
+  src="/logo.png"
+  alt="SPCC Logo"
+  className="logo-img"
+  style={{ 
+    margin: '5px 0 5px 60px', 
+    height: 'auto', 
+    maxHeight: '60px',
+    width: 'auto',
+    objectFit: 'contain'
+  }}
+/>
               <div className="admin-user-info" style={{ display: 'flex', alignItems: 'center', gap: 18 }}>
                 <div style={{ position: 'relative', display: 'inline-block' }}>
                   <NotificationIcon 
@@ -804,9 +837,7 @@ setAnnouncements(res.data);
                 <InboxIcon onClick={() => setActiveSection('inbox')} color="#fff" />
                 <span className="icon">👤</span>
                 <span className="username" style={{ color: '#fff', fontWeight: 600 }}>Administrator</span>
-                <button onClick={handleLogout} className="logout-button" style={{ background: '#ff4757', color: '#fff', fontWeight: 700, border: 'none', borderRadius: 6, padding: '8px 18px', cursor: 'pointer' }}>
-                  Logout
-                </button>
+                
               </div>
             </div>
           </header>
@@ -1100,7 +1131,7 @@ setAnnouncements(res.data);
           {activeSection === 'overview' && (
             <div className="dashboard-overview-section redesigned-overview">
               <h2 style={{fontWeight:700, fontSize:28, color:'#010662', marginBottom:24, display:'flex',alignItems:'center',gap:10}}>
-                <span role="img" aria-label="dashboard">📊</span> Dashboard Overview
+                <span role="img" aria-label="dashboard">📊</span> Admin Dashboard
               </h2>
               <div className="dashboard-overview-cards redesigned-cards">
                 <div className="dashboard-card redesigned-card" style={{background:'#e3f2fd', border: '2px solid #010662'}}>
@@ -1354,21 +1385,55 @@ setAnnouncements(res.data);
                           <input name="email" type="email" value={addUserForm.email} onChange={handleAddUserFormChange} required />
                         </div>
                         <div className="form-group">
-                          <label>Contact Number</label>
-                          <input name="contact" type="text" value={addUserForm.contact} maxLength={11} onChange={handleAddUserFormChange} />
-                        </div>
+                            <label>Contact Number</label>
+                            <input
+                              name="contact"
+                              type="text"
+                              value={addUserForm.contact}
+                              maxLength={11}
+                              onChange={(e) => {
+                                const value = e.target.value.replace(/\D/g, ""); // remove non-numbers
+                                handleAddUserFormChange({
+                                  target: { name: "contact", value }
+                                });
+                              }}
+                            />
+                          </div>
                         {addUserRole !== 'parent' && (
                           <div className="form-group">
-                            <label>ID Number</label>
-                            <input name="idNumber" type="text" value={addUserForm.idNumber} onChange={handleAddUserFormChange} />
-                          </div>
+                        <label>ID Number</label>
+                        <input
+                          name="idNumber"
+                          type="text"
+                          value={addUserForm.idNumber}
+                          inputMode="numeric"
+                          pattern="[0-9]*"
+                          onChange={(e) => {
+                            const value = e.target.value.replace(/\D/g, ""); // remove non-numbers
+                            handleAddUserFormChange({
+                              target: { name: "idNumber", value }
+                            });
+                          }}
+                        />
+                      </div>
                         )}
                       </div>
                       {/* Row 3: Account fields */}
                       <div className="form-row">
                         <div className="form-group">
                           <label>Username<span style={{color:'red'}}>*</span></label>
-                          <input name="username" type="text" value={addUserForm.username} onChange={handleAddUserFormChange} required />
+                          <input
+                            name="username"
+                            type="text"
+                            value={addUserForm.username}
+                            onChange={(e) => {
+                              const value = e.target.value.replace(/[^a-zA-Z]/g, ""); // allow letters only
+                              handleAddUserFormChange({
+                                target: { name: "username", value }
+                              });
+                            }}
+                            required
+                          />
                         </div>
                         <div className="form-group">
                           <label>Password<span style={{color:'red'}}>*</span></label>

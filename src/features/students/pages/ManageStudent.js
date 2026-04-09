@@ -137,6 +137,64 @@ const ManageStudent = ({ refreshDashboard }) => {
     };
     initializeComponent();
   }, []);
+  const handleRegisterStudent = async () => {
+  if (!validateForm()) return;
+
+  if (!capturedPhoto && !formData.photo) {
+    alert("Please capture or upload a student photo.");
+    return;
+  }
+
+  let descriptor = null;
+  let photoUrl = null;
+
+  const photoSource = formData.photo || capturedPhoto;
+
+  let detectionBlob = photoSource;
+
+  if (typeof photoSource === "string") {
+    const response = await fetch(photoSource);
+    detectionBlob = await response.blob();
+  }
+
+  descriptor = await processFaceDetection(detectionBlob);
+  if (!descriptor) return;
+
+  if (!Array.isArray(descriptor) || descriptor.length !== 128) {
+    alert("Invalid face descriptor.");
+    return;
+  }
+
+  if (photoSource instanceof Blob) {
+    const reader = new FileReader();
+    photoUrl = await new Promise(resolve => {
+      reader.onloadend = () => resolve(reader.result);
+      reader.readAsDataURL(photoSource);
+    });
+  } else {
+    photoUrl = photoSource;
+  }
+
+  const studentData = {
+    fullName: formData.fullName.trim(),
+    studentId: formData.studentId.trim(),
+    section: formData.section.trim(),
+    gradeLevel: formData.gradeLevel.trim(),
+    descriptor,
+    photo: photoUrl,
+    status: "Active"
+  };
+
+  try {
+    await addStudent(studentData);
+    const dbStudents = await fetchStudents();
+    setBackendStudents(dbStudents);
+    alert("Student registered successfully!");
+    resetForm();
+  } catch {
+    alert("Failed to register student.");
+  }
+};
 
   const handleBatchClick = () => excelInputRef.current.click();
 
@@ -623,7 +681,7 @@ const ManageStudent = ({ refreshDashboard }) => {
           </div>
           <div className="form-actions">
             <button 
-              onClick={formMode === 'edit' ? handleSaveEdit : undefined}
+              onClick={formMode === 'edit' ? handleSaveEdit : handleRegisterStudent}
               disabled={isLoading}
               className="primary-button"
             >

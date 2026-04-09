@@ -105,9 +105,7 @@ function TodayAttendanceSummary({ studentsInSections }) {
         <span style={{ color: '#38a169', fontWeight: 500 }}>
           Present: {summary.present}
         </span>
-        <span style={{ color: '#FFA500', fontWeight: 500 }}>
-          Late: {summary.late}
-        </span>
+       
         <span style={{ color: '#ff4757', fontWeight: 500 }}>
           Absent: {summary.absent}
         </span>
@@ -124,11 +122,6 @@ function TodayAttendanceSummary({ studentsInSections }) {
 }
 
 
-
-
-
-
-
 // Helper to fetch user info by id
 async function fetchUserName(userId) {
 	try {
@@ -139,6 +132,210 @@ async function fetchUserName(userId) {
 	} catch {
 		return userId;
 	}
+}
+
+
+function TodayAttendanceList() {
+  const [attendance, setAttendance] = useState([]);
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    // Initial fetch with better error handling
+    const fetchInitialAttendance = async () => {
+      setLoading(true);
+      try {
+        const apiUrl = `${process.env.REACT_APP_API_URL}/api/attendance/today`;
+        console.log('Fetching from:', apiUrl);
+        
+        const res = await fetch(apiUrl);
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const data = await res.json();
+        
+        // Handle different response formats
+        let attendanceList = [];
+        if (Array.isArray(data)) {
+          attendanceList = data;
+        } else if (data.attendance && Array.isArray(data.attendance)) {
+          attendanceList = data.attendance;
+        } else if (data.data && Array.isArray(data.data)) {
+          attendanceList = data.data;
+        }
+        
+        console.log('Initial attendance fetched:', attendanceList);
+        setAttendance(attendanceList);
+        setError(null);
+      } catch (err) {
+        console.error('Failed to fetch attendance:', err);
+        setError(err.message);
+        setAttendance([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchInitialAttendance();
+
+    // Connect to WebSocket server
+    const wsUrl = `${process.env.REACT_APP_WS_URL}/attendance`;
+    console.log('Connecting to WebSocket:', wsUrl);
+    
+    // Validate WebSocket URL before connecting
+    if (!wsUrl || wsUrl.includes('undefined')) {
+      console.error('Invalid WebSocket URL:', wsUrl);
+      setError('WebSocket configuration error. Check .env file.');
+      return;
+    }
+    
+    const ws = new WebSocket(wsUrl);
+
+    ws.onopen = () => {
+      console.log('✅ WebSocket connected');
+      setError(null);
+    };
+    
+    ws.onmessage = event => {
+      try {
+        const newRecord = JSON.parse(event.data);
+        console.log('New attendance record received:', newRecord);
+        setAttendance(prev => [newRecord, ...prev]);
+      } catch (err) {
+        console.error('Failed to parse WebSocket message:', err);
+      }
+    };
+
+    ws.onerror = error => {
+      console.error('WebSocket error:', error);
+      setError('Real-time connection failed. Showing cached data.');
+    };
+
+    ws.onclose = () => {
+      console.log('WebSocket closed');
+    };
+
+    return () => {
+      ws.close();
+    };
+  }, []);
+
+  return (
+    <div style={{ padding: 24 }}>
+      <h2 style={{ fontWeight: 700, fontSize: 24, color: '#010662', marginBottom: 16 }}>
+        📋 Today's Attendance
+      </h2>
+
+      {error && (
+        <div style={{ 
+          background: '#ffeaea', 
+          color: '#cc0000', 
+          padding: 12, 
+          borderRadius: 8, 
+          marginBottom: 16, 
+          fontSize: 14,
+          border: '1px solid #ff4757'
+        }}>
+          ⚠️ {error}
+        </div>
+      )}
+
+      {loading && (
+        <div style={{ 
+          textAlign: 'center', 
+          padding: 40, 
+          color: '#888',
+          fontSize: 16
+        }}>
+          Loading attendance records...
+        </div>
+      )}
+
+      {!loading && (
+        <table style={{ 
+          width: '100%', 
+          borderCollapse: 'collapse', 
+          marginTop: 20,
+          boxShadow: '0 2px 8px rgba(1,6,98,0.08)',
+          borderRadius: 8,
+          overflow: 'hidden'
+        }}>
+          <thead>
+            <tr style={{ background: '#010662', color: '#fff' }}>
+              <th style={{ padding: 12, textAlign: 'left', fontWeight: 600 }}>Student Name</th>
+              <th style={{ padding: 12, textAlign: 'left', fontWeight: 600 }}>Student ID</th>
+              <th style={{ padding: 12, textAlign: 'left', fontWeight: 600 }}>Status</th>
+              <th style={{ padding: 12, textAlign: 'left', fontWeight: 600 }}>Time</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            {attendance.length === 0 ? (
+              <tr>
+                <td colSpan="4" style={{ 
+                  textAlign: 'center', 
+                  padding: 40, 
+                  color: '#888',
+                  fontSize: 15
+                }}>
+                  No attendance recorded today
+                </td>
+              </tr>
+            ) : (
+              attendance.map((a, index) => (
+                <tr 
+                  key={a._id || `${a.studentId}-${a.time}-${index}`} 
+                  style={{ 
+                    borderBottom: '1px solid #eee',
+                    background: index % 2 === 0 ? '#fafbfc' : '#fff',
+                    transition: 'background 0.2s'
+                  }}
+                  onMouseEnter={(e) => e.currentTarget.style.background = '#f0f4ff'}
+                  onMouseLeave={(e) => e.currentTarget.style.background = index % 2 === 0 ? '#fafbfc' : '#fff'}
+                >
+                  <td style={{ padding: 12, color: '#222', fontWeight: 500 }}>
+                    {a.studentName || 'Unknown'}
+                  </td>
+                  <td style={{ padding: 12, color: '#555' }}>
+                    {a.studentId || 'N/A'}
+                  </td>
+                  <td style={{ padding: 12 }}>
+                    <span style={{
+                      background: a.status === 'Present' ? '#e6fffa' : 
+                                 
+                                 a.status === 'Absent' ? '#ffeaea' : '#f0f0f0',
+                      color: a.status === 'Present' ? '#38b2ac' : 
+                             
+                             a.status === 'Absent' ? '#ff4757' : '#888',
+                      padding: '6px 12px',
+                      borderRadius: 6,
+                      fontWeight: 600,
+                      fontSize: 13,
+                      display: 'inline-block'
+                    }}>
+                      {a.status || 'Unknown'}
+                    </span>
+                  </td>
+                  <td style={{ padding: 12, color: '#555', fontSize: 14 }}>
+                    {a.time ? new Date(a.time).toLocaleTimeString() : 'N/A'}
+                  </td>
+                </tr>
+              ))
+            )}
+          </tbody>
+        </table>
+      )}
+
+      {!loading && attendance.length > 0 && (
+        <div style={{ 
+          marginTop: 16, 
+          color: '#666', 
+          fontSize: 13,
+          textAlign: 'right'
+        }}>
+          Total: {attendance.length} record{attendance.length !== 1 ? 's' : ''}
+        </div>
+      )}
+    </div>
+  );
 }
 
 
@@ -696,6 +893,44 @@ useEffect(() => {
 							   <li onClick={() => { handleGoToFaceRecognition(); setSidebarOpen(false); }} style={{ background: 'transparent', color: '#fff', fontWeight: 500, borderRadius: 8, margin: '8px 12px', padding: '12px 18px', cursor: 'pointer', transition: 'background 0.2s' }}>
 								   🤳 Facial Recognition
 							   </li>
+							   <li 
+								className={activeSection === 'todayAttendance' ? 'active' : ''}
+								onClick={() => { setActiveSection('todayAttendance'); setSidebarOpen(false); }}
+								style={{
+									background: activeSection === 'todayAttendance' ? '#fff' : 'transparent',
+									color: activeSection === 'todayAttendance' ? '#010662' : '#fff',
+									fontWeight: activeSection === 'todayAttendance' ? 700 : 500,
+									borderRadius: 8,
+									margin: '8px 12px',
+									padding: '12px 18px',
+									cursor: 'pointer',
+									transition: 'background 0.2s'
+								}}
+								>
+								📋 Today Attendance
+								</li>
+								 <li 
+								onClick={() => { 
+								setSidebarOpen(false); 
+								handleLogout(); 
+								}}
+								style={{ 
+								background: '#ff4757', 
+								color: '#fff', 
+								fontWeight: 700, 
+								borderRadius: 8, 
+								margin: '16px 12px 8px 12px', 
+								padding: '12px 1px', 
+								cursor: 'pointer', 
+								transition: 'all 0.2s',
+								border: 'none',
+								width: 'calc(100% - 14px)',
+								textAlign: 'center'
+								}}
+								className="logout-button"
+							>
+								Logout
+							</li>
 						   </ul>
 					   </nav>
 				   </aside>
@@ -718,46 +953,72 @@ useEffect(() => {
 				   )}
 				<div className="admin-main-content" style={{ marginLeft: sidebarOpen ? 260 : 0, transition: 'margin-left 0.3s' }}>
 					   <header className="admin-header" style={{ paddingRight: 36, background: 'linear-gradient(90deg, #010662 0%, #38b2ac 100%)', color: '#fff', borderBottom: '2px solid #010662', boxShadow: '0 2px 8px rgba(1,6,98,0.08)' }}>
-						   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-							   <h1 style={{ margin: '10px 0 10px 60px', fontSize: '1.25rem', color: '#fff', fontWeight: 700 }}>Teacher Dashboard</h1>
-							   <div className="admin-user-info" style={{ display: 'flex', alignItems: 'center', gap: 18 }}>
-								   <span className="icon">👤</span>
-								   <span className="username" style={{ color: '#fff', fontWeight: 600 }}>{teacherName}</span>
-								   <div style={{ position: 'relative', display: 'inline-block' }}>
-									   <NotificationIcon 
-										unreadCount={unreadCount}
-										onClick={toggleNotifications}
-										color="#fff"
-										/>
-									   {unreadCount > 0 && (
-										   <span style={{
-											   position: 'absolute',
-											   top: 2,
-											   right: 2,
-											   background: '#ff4757',
-											   color: '#fff',
-											   borderRadius: '50%',
-											   minWidth: 18,
-											   height: 18,
-											   display: 'flex',
-											   alignItems: 'center',
-											   justifyContent: 'center',
-											   fontSize: 10,
-											   fontWeight: 'bold',
-											   padding: '0 5px',
-											   boxShadow: '0 2px 8px rgba(1,6,98,0.10)',
-											   zIndex: 2
-										   }}>
-											   {unreadCount > 99 ? '99+' : unreadCount}
-										   </span>
-									   )}
-								   </div>
-								   <InboxIcon onClick={() => setActiveSection('inbox')} unreadCount={unreadInboxCount} color="#fff" />
-								   <button className="dashboard-btn" style={{ background: '#fff', color: '#010662', fontWeight: 700, border: 'none', borderRadius: 6, padding: '8px 18px', cursor: 'pointer' }} onClick={() => { setShowProfile(true); fetchProfile(); }}>View Profile</button>
-								   <button className="logout-button" style={{ background: '#ff4757', color: '#fff', fontWeight: 700, border: 'none', borderRadius: 6, padding: '8px 18px', cursor: 'pointer' }} onClick={handleLogout}>Logout</button>
-							   </div>
-						   </div>
-					   </header>
+  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+    <img
+      src="/logo.png"
+      alt="SPCC Logo"
+      className="logo-img"
+      style={{ 
+        margin: '5px 0 5px 60px', 
+        height: 'auto', 
+        maxHeight: '60px',
+        width: 'auto',
+        objectFit: 'contain'
+      }}
+    />
+    <div className="admin-user-info" style={{ display: 'flex', alignItems: 'center', gap: 18 }}>
+      <span 
+        className="icon profile-icon" 
+        style={{ 
+          fontSize: '24px', 
+          cursor: 'pointer',
+          padding: '4px',
+          borderRadius: '4px',
+          transition: 'background-color 0.2s'
+        }}
+        onClick={() => { 
+          setShowProfile(true); 
+          fetchProfile(); 
+        }}
+        title="View Profile"
+      >
+        👤
+      </span>
+      <span className="username" style={{ color: '#fff', fontWeight: 600 }}>{teacherName}</span>
+      <div style={{ position: 'relative', display: 'inline-block' }}>
+        <NotificationIcon 
+          unreadCount={unreadCount}
+          onClick={toggleNotifications}
+          color="#fff"
+        />
+        {unreadCount > 0 && (
+          <span style={{
+            position: 'absolute',
+            top: 2,
+            right: 2,
+            background: '#ff4757',
+            color: '#fff',
+            borderRadius: '50%',
+            minWidth: 18,
+            height: 18,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            fontSize: 10,
+            fontWeight: 'bold',
+            padding: '0 5px',
+            boxShadow: '0 2px 8px rgba(1,6,98,0.10)',
+            zIndex: 2
+          }}>
+            {unreadCount > 99 ? '99+' : unreadCount}
+          </span>
+        )}
+      </div>
+      <InboxIcon onClick={() => setActiveSection('inbox')} unreadCount={unreadInboxCount} color="#fff" />
+      
+    </div>
+  </div>
+</header>
 					<NotificationDropdown
 						notifications={notificationList}
 						isOpen={isOpen}
@@ -771,7 +1032,7 @@ useEffect(() => {
 						   {activeSection === 'overview' && (
 							   <div className="dashboard-overview-section redesigned-overview">
 								   <h2 style={{fontWeight:700, fontSize:28, color:'#010662', marginBottom:24, display:'flex',alignItems:'center',gap:10}}>
-									   <span role="img" aria-label="dashboard">📊</span> Dashboard Overview
+									   <span role="img" aria-label="dashboard">📊</span> Teacher Dashboard
 								   </h2>
 								   <div className="dashboard-overview-cards redesigned-cards" style={{display:'grid',gridTemplateColumns:'repeat(5,1fr)',gap:'32px'}}>
 									   <div className="dashboard-card redesigned-card" style={{background:'#e3f2fd', border: '2px solid #010662'}}>
@@ -780,7 +1041,7 @@ useEffect(() => {
 										   <div className="dashboard-card-value" style={{color:'#2196F3'}}>{subjectsHandled}</div>
 										   <div className="dashboard-card-desc">Subjects you handle</div>
 									   </div>
-									   <div className="dashboard-card redesigned-card" style={{background:'#e6fffa', border: '2px solid #010662'}}>
+									   <div className="dashboard-card redesigned-card" style={{background:'#e3f2fd', border: '2px solid #010662'}}>
 										   <div className="dashboard-card-icon" style={{fontSize:32, color:'#010662', marginBottom:8}}>🏫</div>
 										   <div className="dashboard-card-title">Assigned Sections</div>
 										   <div className="dashboard-card-value" style={{color:'#38b2ac'}}>{
@@ -790,7 +1051,7 @@ useEffect(() => {
 										   }</div>
 										   <div className="dashboard-card-desc">Sections assigned to you</div>
 									   </div>
-									   <div className="dashboard-card redesigned-card" style={{background:'#fffbea', border: '2px solid #010662'}}>
+									   <div className="dashboard-card redesigned-card" style={{background:'#e3f2fd', border: '2px solid #010662'}}>
 										   <div className="dashboard-card-icon" style={{fontSize:32, color:'#010662', marginBottom:8}}>👥</div>
 										   <div className="dashboard-card-title">Total Students</div>
 										   <div className="dashboard-card-value" style={{color:'#f6ad55'}}>{studentsInSections}</div>
@@ -801,6 +1062,9 @@ useEffect(() => {
 								   </div>
 							</div>
 						)}
+						{activeSection === 'todayAttendance' && (
+								<TodayAttendanceList />
+								)}
 								{activeSection === 'inbox' && (
 								<div className="inbox-section" style={{maxWidth: '900px', width: '100%', margin: '0 auto', padding: '32px 0'}}>
 										<h2 style={{fontWeight: 700, fontSize: 28, color: '#2d3748', display:'flex',alignItems:'center',gap:8}}>
@@ -1205,10 +1469,7 @@ function TeacherOverview({ dashboardData, onManageStudent, onManageAttendance, o
 					<div style={{ fontSize: '2rem', color: '#38b2ac', fontWeight: 700 }}>{attendanceSummary.present}</div>
 					<div style={{ color: '#38b2ac', fontWeight: 600 }}>Present</div>
 				</div>
-				<div style={{ background: '#fffbea', borderRadius: 10, padding: '18px 32px', boxShadow: '0 2px 8px rgba(246,173,85,0.10)', textAlign: 'center', minWidth: 120 }}>
-					<div style={{ fontSize: '2rem', color: '#f6ad55', fontWeight: 700 }}>{attendanceSummary.late}</div>
-					<div style={{ color: '#f6ad55', fontWeight: 600 }}>Late</div>
-				</div>
+				
 				<div style={{ background: '#ffeaea', borderRadius: 10, padding: '18px 32px', boxShadow: '0 2px 8px rgba(255,71,87,0.10)', textAlign: 'center', minWidth: 120 }}>
 					<div style={{ fontSize: '2rem', color: '#ff4757', fontWeight: 700 }}>{attendanceSummary.absent}</div>
 					<div style={{ color: '#ff4757', fontWeight: 600 }}>Absent</div>
