@@ -591,6 +591,9 @@
 	max-width: 1200px;
 	margin: 0 auto;
 	padding-top: 12px;
+	padding-left: 24px;
+	padding-right: 24px;
+	box-sizing: border-box;
 }
 .dashboard-overview-header {
 	display: flex;
@@ -768,10 +771,78 @@ body {
 	width: 100%;
 	gap: 24px;
 }
+
+.navbar-logo {
+	transition: transform 0.3s ease;
+	background: transparent !important;
+	border: none;
+	padding: 0 !important;
+	margin: 0;
+}
+
+.navbar-logo:hover {
+	transform: scale(1.05);
+}
+
 .admin-header h1 {
 	font-size: 2rem;
 	margin: 0 0 8px 0;
 	color: #333;
+}
+
+/* Responsive navbar branding */
+@media (max-width: 768px) {
+	.admin-header-row {
+		gap: 12px;
+	}
+
+	.navbar-logo {
+		height: 40px !important;
+	}
+
+	.navbar-logo + div {
+		display: flex;
+		flex-direction: column;
+		gap: 2px;
+	}
+
+	.navbar-logo + div span:first-child {
+		font-size: 12px !important;
+	}
+
+	.navbar-logo + div span:last-child {
+		font-size: 14px !important;
+	}
+}
+
+@media (max-width: 500px) {
+	.admin-header {
+		padding: 16px 12px;
+	}
+
+	.admin-header-row {
+		gap: 8px;
+	}
+
+	.navbar-logo {
+		height: 35px !important;
+	}
+
+	.navbar-logo + div span:first-child {
+		font-size: 10px !important;
+	}
+
+	.navbar-logo + div span:last-child {
+		font-size: 12px !important;
+	}
+
+	.admin-user-info {
+		gap: 12px !important;
+	}
+
+	.username {
+		display: none;
+	}
 }
 .admin-top-bar {
 	display: flex;
@@ -840,5 +911,28 @@ body {
 	.admin-sidebar {
 		width: 180px;
 		padding-top: 16px;
+	}
+	.dashboard-overview-section {
+		padding-left: 16px;
+		padding-right: 16px;
+	}
+	.dashboard-overview-cards {
+		gap: 20px;
+	}
+	.dashboard-users-card {
+		min-width: 280px;
+	}
+}
+
+@media (max-width: 768px) {
+	.dashboard-overview-cards {
+		gap: 16px;
+	}
+	.dashboard-users-card {
+		min-width: 100%;
+		max-width: 100%;
+	}
+	.dashboard-users-row {
+		gap: 16px;
 	}
 }

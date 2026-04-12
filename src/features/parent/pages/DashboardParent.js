@@ -7,6 +7,8 @@ import { fetchInbox, fetchSentMessages, sendExcuseLetter, deleteMessage } from '
 import { fetchAllTeachers } from '../../../api/userApi';
 import { fetchStudents } from '../../../api/studentApi';
 import { fetchAttendance } from '../../../../src/utils/attendanceApi';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faBars, faHome, faUsers, faClipboard, faBullhorn, faEnvelope, faFileAlt, faSignOutAlt, faUser, faX } from '@fortawesome/free-solid-svg-icons';
 
 function DashboardParent() {
   // Announcement unread count state
@@ -16,6 +18,7 @@ function DashboardParent() {
   const { user: currentUser } = useUser();
   // Hamburger menu state
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [hoveredIcon, setHoveredIcon] = useState(null);
   // Close sidebar on navigation (mobile)
   const handleNav = (section) => {
     setActiveSection(section);
@@ -370,169 +373,166 @@ function handleAnnouncementMarkAsRead(announcementId) {
   return (
     <div className="admin-dashboard-container" style={{ position: 'relative', minHeight: '100vh', overflowX: 'hidden' }}>
       {/* Hamburger menu button - above header */}
+      {!sidebarOpen && (
       <button
         className="hamburger-menu-btn"
         style={{
           position: 'fixed',
-          top: 16,
-          left: 18,
-          zIndex: 4000, // higher than header
-          background: '#010662',
+          top: 24,
+          left: 24,
+          zIndex: 10001,
+          background: 'transparent',
           border: 'none',
           borderRadius: 8,
-          width: 44,
-          height: 44,
+          width: 48,
+          height: 48,
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          boxShadow: '0 2px 8px #01066222',
           cursor: 'pointer',
-          color: '#fff',
-          fontSize: 28,
-          transition: 'background 0.2s',
+          fontSize: 28
         }}
         aria-label="Open sidebar menu"
         onClick={() => setSidebarOpen(true)}
       >
-        <span style={{ display: 'block', width: 28, height: 28 }}>
-          <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <rect y="5" width="28" height="3.5" rx="1.5" fill="#fff"/>
-            <rect y="12" width="28" height="3.5" rx="1.5" fill="#fff"/>
-            <rect y="19" width="28" height="3.5" rx="1.5" fill="#fff"/>
-          </svg>
-        </span>
+        <FontAwesomeIcon icon={faBars} style={{color: '#fff', fontSize: '20px'}} />
       </button>
+      )}
       {/* Header - fixed at top, full width */}
       <header
         style={{
-          background: 'linear-gradient(90deg, #010662 0%, #38b2ac 100%)',
+          background: 'linear-gradient(90deg, #010162 0%, #1a1a8a 100%)',
           color: '#fff',
-          padding: '0 36px',
-          borderBottom: '2px solid #010662',
-          boxShadow: '0 2px 8px rgba(1,6,98,0.08)',
+          padding: 0,
+          borderBottom: '2px solid #010162',
+          boxShadow: '0 2px 8px rgba(1,1,98,0.15)',
           position: 'fixed',
           top: 0,
           left: 0,
           width: '100vw',
-          zIndex: 3000,
-          minHeight: 80, // thicker header
+          zIndex: 100,
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between'
         }}
       >
-        <h1 style={{ margin: '10px 0 10px 60px', color: '#fff', fontWeight: 700, fontSize: '1.35rem', letterSpacing: '0.5px' }}>Parent Dashboard</h1>
-        <div className="admin-user-info" style={{ display: 'flex', alignItems: 'center', gap: 10, marginRight: 24 }}>
-          <span className="icon" style={{marginRight:6}}>👤</span>
-          <span className="username" style={{ color: '#fff', fontWeight: 600, marginRight: 10 }}>{parentName}</span>
-          {/* Notification icon placeholder, replace with real component if available */}
-  
-          {/* Inbox icon and unread count - clickable */}
-          <InboxIcon unreadCount={unreadInboxCount} onClick={() => setActiveSection('inbox')} />
-      
-          <button className="logout-button" style={{ background: '#ff4757', color: '#fff', fontWeight: 700, border: 'none', borderRadius: 6, padding: '8px 28px 8px 28px', cursor: 'pointer', marginRight: 4, minWidth: 100 }} onClick={handleLogout}>Logout</button>
+        <div style={{ display: 'flex', alignItems: 'center', padding: '25px 24px', paddingLeft: '80px', gap: '12px', cursor: 'pointer', minWidth: 0 }}>
+          <img
+            src="/images/spcc-logo.png"
+            alt="SPCC Logo"
+            className="navbar-logo"
+            style={{ 
+              height: '45px',
+              width: 'auto',
+              objectFit: 'contain',
+              filter: 'brightness(1.1)',
+              background: 'transparent',
+              padding: '0',
+              flexShrink: 0
+            }}
+          />
+          <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', lineHeight: '1.1' }}>
+            <span style={{ fontSize: '12px', fontWeight: '600', color: '#f8bb08', textTransform: 'uppercase', letterSpacing: '0.5px' }}>SPCC</span>
+            <span style={{ fontSize: '15px', fontWeight: '700', color: '#fff' }}>Parent Dashboard</span>
+          </div>
+        </div>
+        <div className="admin-user-info" style={{ display: 'flex', alignItems: 'center', gap: '20px', padding: '25px 24px', flexShrink: 0 }}>
+          <InboxIcon unreadCount={unreadInboxCount} onClick={() => setActiveSection('inbox')} color="#fff" />
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <button
+              style={{
+                background: 'none',
+                border: 'none',
+                cursor: 'pointer',
+                padding: '8px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
+              }}
+              title="User Profile"
+              onMouseEnter={() => setHoveredIcon('userProfile')}
+              onMouseLeave={() => setHoveredIcon(null)}
+            >
+              <FontAwesomeIcon icon={faUser} style={{color: hoveredIcon === 'userProfile' ? '#f8bb08' : '#fff', fontSize: '20px', transition: 'color 0.2s'}} />
+            </button>
+            <span className="username" style={{ color: '#fff', fontWeight: 600 }}>{parentName}</span>
+          </div>
         </div>
       </header>
-      {/* Hamburger icon for mobile */}
-      <button
-        className="hamburger-menu-btn"
-        style={{
-          position: 'fixed',
-          top: 18,
-          left: 18,
-          zIndex: 2002,
-          background: primaryColor,
-          border: 'none',
-          borderRadius: 8,
-          width: 44,
-          height: 44,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          boxShadow: '0 2px 8px #01066222',
-          cursor: 'pointer',
-          color: '#fff',
-          fontSize: 28,
-          transition: 'background 0.2s',
-        }}
-        aria-label="Open sidebar menu"
-        onClick={() => setSidebarOpen(true)}
-      >
-        <span style={{ display: 'block', width: 28, height: 28 }}>
-          <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <rect y="5" width="28" height="3.5" rx="1.5" fill="#fff"/>
-            <rect y="12" width="28" height="3.5" rx="1.5" fill="#fff"/>
-            <rect y="19" width="28" height="3.5" rx="1.5" fill="#fff"/>
-          </svg>
-        </span>
-      </button>
+      {/* Sidebar */}
       <aside
         className="admin-sidebar"
         style={{
-          background: primaryColor,
+          background: '#010662',
           position: 'fixed',
-          top: 80, // move below header
+          top: 0,
           left: sidebarOpen ? 0 : -260,
           width: 260,
-          height: 'calc(100vh - 80px)', // adjust for header height
-          zIndex: 2001,
-          boxShadow: sidebarOpen ? '0 2px 24px #01066233' : 'none',
-          transition: 'left 0.25s cubic-bezier(.4,1.6,.6,1)',
-          display: 'flex',
-          flexDirection: 'column',
+          height: '100vh',
+          zIndex: 10000,
+          boxShadow: sidebarOpen ? '2px 0 16px rgba(1,6,98,0.10)' : 'none',
+          transition: 'left 0.3s',
+          paddingTop: 0
         }}
       >
-        {/* Close button for mobile */}
-        <button
-          onClick={() => setSidebarOpen(false)}
-          aria-label="Close sidebar menu"
-          style={{
-            display: 'block',
-            background: 'none',
-            border: 'none',
-            color: '#fff',
-            fontSize: 32,
-            position: 'absolute',
-            top: 18,
-            right: 18,
-            cursor: 'pointer',
-            zIndex: 2003,
-            outline: 'none',
-            visibility: 'visible',
-          }}
-        >×</button>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '18px 18px 0 18px' }}>
+          <button
+            onClick={() => setSidebarOpen(false)}
+            aria-label="Close sidebar menu"
+            style={{
+              background: 'none',
+              border: 'none',
+              color: '#fff',
+              fontSize: 28,
+              cursor: 'pointer',
+              marginLeft: 8
+            }}
+          >
+            <FontAwesomeIcon icon={faX} style={{fontSize: '20px'}} />
+          </button>
+        </div>
         
-        <nav className="admin-nav">
+        <nav className="admin-nav" style={{ marginTop: 18, paddingTop: '8px', paddingBottom: '24px' }}>
           <ul style={{ padding: 0, margin: 0, listStyle: 'none', width: '100%' }}>
-            <li className={activeSection === 'overview' ? 'active' : ''} onClick={() => handleNav('overview')} style={{ color: activeSection === 'overview' ? primaryColor : '#fff', background: activeSection === 'overview' ? '#fff' : 'transparent', fontWeight: 700, padding: '14px 24px', borderRadius: 8, margin: '6px 12px', cursor: 'pointer' }}>Overview</li>
-            <li className={activeSection === 'students' ? 'active' : ''} onClick={() => handleNav('students')} style={{ color: activeSection === 'students' ? primaryColor : '#fff', background: activeSection === 'students' ? '#fff' : 'transparent', fontWeight: 700, padding: '14px 24px', borderRadius: 8, margin: '6px 12px', cursor: 'pointer' }}>
+            <li className={activeSection === 'overview' ? 'active' : ''} onClick={() => handleNav('overview')} style={{ background: activeSection === 'overview' ? '#fff' : 'transparent', color: activeSection === 'overview' ? '#010662' : '#fff', fontWeight: activeSection === 'overview' ? 700 : 500, padding: '12px 18px', borderRadius: 8, margin: '10px 12px', cursor: 'pointer', transition: 'background 0.2s', display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <FontAwesomeIcon icon={faHome} style={{fontSize: '18px', color: (activeSection === 'overview') ? '#f8bb08' : 'inherit', transition: 'color 0.2s'}} />
+              Overview
+            </li>
+            <li className={activeSection === 'students' ? 'active' : ''} onClick={() => handleNav('students')} style={{ background: activeSection === 'students' ? '#fff' : 'transparent', color: activeSection === 'students' ? '#010662' : '#fff', fontWeight: activeSection === 'students' ? 700 : 500, padding: '12px 18px', borderRadius: 8, margin: '10px 12px', cursor: 'pointer', transition: 'background 0.2s', display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <FontAwesomeIcon icon={faUsers} style={{fontSize: '18px', color: (activeSection === 'students') ? '#f8bb08' : 'inherit', transition: 'color 0.2s'}} />
               Enrolled Students
             </li>
-            <li className={activeSection === 'attendance' ? 'active' : ''} onClick={() => handleNav('attendance')} style={{ color: activeSection === 'attendance' ? primaryColor : '#fff', background: activeSection === 'attendance' ? '#fff' : 'transparent', fontWeight: 700, padding: '14px 24px', borderRadius: 8, margin: '6px 12px', cursor: 'pointer' }}>Attendance</li>
-            <li className={activeSection === 'announcements' ? 'active' : ''} onClick={() => handleNav('announcements')} style={{ color: activeSection === 'announcements' ? primaryColor : '#fff', background: activeSection === 'announcements' ? '#fff' : 'transparent', fontWeight: 700, padding: '14px 24px', borderRadius: 8, margin: '6px 12px', cursor: 'pointer', position: 'relative' }}>
+            <li className={activeSection === 'attendance' ? 'active' : ''} onClick={() => handleNav('attendance')} style={{ background: activeSection === 'attendance' ? '#fff' : 'transparent', color: activeSection === 'attendance' ? '#010662' : '#fff', fontWeight: activeSection === 'attendance' ? 700 : 500, padding: '12px 18px', borderRadius: 8, margin: '10px 12px', cursor: 'pointer', transition: 'background 0.2s', display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <FontAwesomeIcon icon={faClipboard} style={{fontSize: '18px', color: (activeSection === 'attendance') ? '#f8bb08' : 'inherit', transition: 'color 0.2s'}} />
+              Attendance
+            </li>
+            <li className={activeSection === 'announcements' ? 'active' : ''} onClick={() => handleNav('announcements')} style={{ background: activeSection === 'announcements' ? '#fff' : 'transparent', color: activeSection === 'announcements' ? '#010662' : '#fff', fontWeight: activeSection === 'announcements' ? 700 : 500, padding: '12px 18px', borderRadius: 8, margin: '10px 12px', cursor: 'pointer', transition: 'background 0.2s', display: 'flex', alignItems: 'center', gap: '8px', position: 'relative' }}>
+              <FontAwesomeIcon icon={faBullhorn} style={{fontSize: '18px', color: (activeSection === 'announcements') ? '#f8bb08' : 'inherit', transition: 'color 0.2s'}} />
               Announcements
               {announcementUnreadCount > 0 && (
                 <span style={{
-                  position: 'absolute',
-                  right: 18,
-                  top: 12,
+                  marginLeft: 'auto',
                   background: '#ff4757',
                   color: '#fff',
                   borderRadius: 8,
-                  padding: '2px 10px',
+                  padding: '2px 8px',
                   fontWeight: 700,
-                  fontSize: '0.98rem',
-                  boxShadow: '0 1px 4px #ff475710',
-                  border: '2px solid #fff',
-                  letterSpacing: 0.5
+                  fontSize: '0.85rem'
                 }}>{announcementUnreadCount}</span>
               )}
             </li>
-            <li className={activeSection === 'inbox' ? 'active' : ''} onClick={() => handleNav('inbox')} style={{ color: activeSection === 'inbox' ? primaryColor : '#fff', background: activeSection === 'inbox' ? '#fff' : 'transparent', fontWeight: 700, padding: '14px 24px', borderRadius: 8, margin: '6px 12px', cursor: 'pointer' }}>
+            <li className={activeSection === 'inbox' ? 'active' : ''} onClick={() => handleNav('inbox')} style={{ background: activeSection === 'inbox' ? '#fff' : 'transparent', color: activeSection === 'inbox' ? '#010662' : '#fff', fontWeight: activeSection === 'inbox' ? 700 : 500, padding: '12px 18px', borderRadius: 8, margin: '10px 12px', cursor: 'pointer', transition: 'background 0.2s', display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <FontAwesomeIcon icon={faEnvelope} style={{fontSize: '18px', color: (activeSection === 'inbox') ? '#f8bb08' : 'inherit', transition: 'color 0.2s'}} />
               Inbox {unreadInboxCount > 0 && (<span style={{ color: '#ff4757', fontWeight: 'bold', marginLeft: 6 }}>{unreadInboxCount}</span>)}
             </li>
-            <li className={activeSection === 'excuse' ? 'active' : ''} onClick={() => handleNav('excuse')} style={{ color: activeSection === 'excuse' ? primaryColor : '#fff', background: activeSection === 'excuse' ? '#fff' : 'transparent', fontWeight: 700, padding: '14px 24px', borderRadius: 8, margin: '6px 12px', cursor: 'pointer' }}>Excuse Letter</li>
-            <li onClick={() => navigate('/')} style={{ color: '#fff', fontWeight: 700, padding: '14px 24px', borderRadius: 8, margin: '6px 12px', cursor: 'pointer' }}>Logout</li>
+            <li className={activeSection === 'excuse' ? 'active' : ''} onClick={() => handleNav('excuse')} style={{ background: activeSection === 'excuse' ? '#fff' : 'transparent', color: activeSection === 'excuse' ? '#010662' : '#fff', fontWeight: activeSection === 'excuse' ? 700 : 500, padding: '12px 18px', borderRadius: 8, margin: '10px 12px', cursor: 'pointer', transition: 'background 0.2s', display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <FontAwesomeIcon icon={faFileAlt} style={{fontSize: '18px', color: (activeSection === 'excuse') ? '#f8bb08' : 'inherit', transition: 'color 0.2s'}} />
+              Excuse Letter
+            </li>
+            <li onClick={() => { setSidebarOpen(false); handleLogout(); }} style={{ background: '#ff4757', color: '#fff', fontWeight: 700, padding: '12px 18px', borderRadius: 8, margin: '16px 12px 8px 12px', cursor: 'pointer', transition: 'all 0.2s', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
+              <FontAwesomeIcon icon={faSignOutAlt} style={{fontSize: '18px'}} />
+              Logout
+            </li>
           </ul>
         </nav>
       </aside>
@@ -546,9 +546,9 @@ function handleAnnouncementMarkAsRead(announcementId) {
             left: 0,
             width: '100vw',
             height: '100vh',
-            background: '#01066255',
-            zIndex: 2000,
-            animation: 'fadeInOverlay 0.2s',
+            background: 'rgba(1,6,98,0.18)',
+            zIndex: 9999,
+            transition: 'background 0.2s'
           }}
         />
       )}

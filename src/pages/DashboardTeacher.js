@@ -16,6 +16,8 @@ import { fetchAllParents, fetchAllTeachers } from '../api/userApi';
 import { fetchStudents } from '../api/studentApi';
 import { fetchTodayAttendanceSummary } from '../api/attendanceApi';
 import axios from 'axios';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faBars, faHome, faEnvelope, faBullhorn, faClipboard, faCamera, faListCheck, faUser, faSignOutAlt, faX } from '@fortawesome/free-solid-svg-icons';
 
 
 
@@ -251,13 +253,13 @@ function TodayAttendanceList() {
 
       {!loading && (
         <table style={{ 
-          width: '100%', 
-          borderCollapse: 'collapse', 
-          marginTop: 20,
-          boxShadow: '0 2px 8px rgba(1,6,98,0.08)',
-          borderRadius: 8,
-          overflow: 'hidden'
-        }}>
+            width: '100%', 
+            borderCollapse: 'collapse', 
+            marginTop: 20,
+            boxShadow: '0 2px 8px rgba(1,6,98,0.08)',
+            borderRadius: 8,
+            overflow: 'hidden'
+          }}>
           <thead>
             <tr style={{ background: '#010662', color: '#fff' }}>
               <th style={{ padding: 12, textAlign: 'left', fontWeight: 600 }}>Student Name</th>
@@ -342,6 +344,7 @@ function TodayAttendanceList() {
 function DashboardTeacher() {
     const [teacherMessageFile, setTeacherMessageFile] = useState(null);
     const [sidebarOpen, setSidebarOpen] = useState(false);
+    const [hoveredIcon, setHoveredIcon] = useState(null);
     const [showSendMessage, setShowSendMessage] = useState(false);
     const [inboxView, setInboxView] = useState('received');
     const { user: currentUser } = useUser();
@@ -823,13 +826,14 @@ useEffect(() => {
 		return (
 			<div className="teacher-dashboard-container admin-dashboard-container">
 				   {/* Hamburger button */}
+				   {!sidebarOpen && (
 				   <button
 					   style={{
 						   position: 'fixed',
 						   top: 24,
 						   left: 24,
 						   zIndex: 10001,
-						   background: '#010662',
+						   background: 'transparent',
 						   color: '#fff',
 						   border: 'none',
 						   borderRadius: 8,
@@ -838,15 +842,15 @@ useEffect(() => {
 						   display: 'flex',
 						   alignItems: 'center',
 						   justifyContent: 'center',
-						   boxShadow: '0 2px 8px rgba(1,6,98,0.10)',
 						   cursor: 'pointer',
 						   fontSize: 28
 					   }}
 					   onClick={() => setSidebarOpen(true)}
 					   aria-label="Open sidebar"
 				   >
-					   <span style={{fontSize:32, lineHeight:0.8}}>☰</span>
+					   <FontAwesomeIcon icon={faBars} style={{color: '#fff', fontSize: '20px'}} />
 				   </button>
+				   )}
 
 				   {/* Sidebar drawer */}
 				   <aside
@@ -871,27 +875,34 @@ useEffect(() => {
 							   style={{ background: 'none', border: 'none', color: '#fff', fontSize: 28, cursor: 'pointer', marginLeft: 8 }}
 							   onClick={() => setSidebarOpen(false)}
 							   aria-label="Close sidebar"
-						   >×</button>
+						   >
+							   <FontAwesomeIcon icon={faX} style={{fontSize: '20px'}} />
+						   </button>
 					   </div>
-					   <nav className="admin-nav" style={{ marginTop: 18 }}>
+					   <nav className="admin-nav" style={{ marginTop: 18, paddingTop: '8px', paddingBottom: '24px' }}>
 						   <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
-							   <li className={activeSection === 'overview' ? 'active' : ''} onClick={() => { setActiveSection('overview'); setSidebarOpen(false); }} style={{ background: activeSection === 'overview' ? '#fff' : 'transparent', color: activeSection === 'overview' ? '#010662' : '#fff', fontWeight: activeSection === 'overview' ? 700 : 500, borderRadius: 8, margin: '8px 12px', padding: '12px 18px', cursor: 'pointer', transition: 'background 0.2s' }}>
-								   🏠 Dashboard Overview
+							   <li className={activeSection === 'overview' ? 'active' : ''} onClick={() => { setActiveSection('overview'); setSidebarOpen(false); }} style={{ background: activeSection === 'overview' ? '#fff' : 'transparent', color: activeSection === 'overview' ? '#010662' : '#fff', fontWeight: activeSection === 'overview' ? 700 : 500, borderRadius: 8, margin: '10px 12px', padding: '12px 18px', cursor: 'pointer', transition: 'background 0.2s', display: 'flex', alignItems: 'center', gap: '8px' }}>
+								   <FontAwesomeIcon icon={faHome} style={{fontSize: '18px', color: (activeSection === 'overview') ? '#f8bb08' : 'inherit', transition: 'color 0.2s'}} />
+								   Dashboard Overview
 							   </li>
-							   <li className={activeSection === 'inbox' ? 'active' : ''} onClick={() => { setActiveSection('inbox'); setSidebarOpen(false); }} style={{ background: activeSection === 'inbox' ? '#fff' : 'transparent', color: activeSection === 'inbox' ? '#010662' : '#fff', fontWeight: activeSection === 'inbox' ? 700 : 500, borderRadius: 8, margin: '8px 12px', padding: '12px 18px', cursor: 'pointer', transition: 'background 0.2s' }}>
-								   📥 Inbox {unreadInboxCount > 0 && (
+							   <li className={activeSection === 'inbox' ? 'active' : ''} onClick={() => { setActiveSection('inbox'); setSidebarOpen(false); }} style={{ background: activeSection === 'inbox' ? '#fff' : 'transparent', color: activeSection === 'inbox' ? '#010662' : '#fff', fontWeight: activeSection === 'inbox' ? 700 : 500, borderRadius: 8, margin: '10px 12px', padding: '12px 18px', cursor: 'pointer', transition: 'background 0.2s', display: 'flex', alignItems: 'center', gap: '8px' }}>
+								   <FontAwesomeIcon icon={faEnvelope} style={{fontSize: '18px', color: (activeSection === 'inbox') ? '#f8bb08' : 'inherit', transition: 'color 0.2s'}} />
+								   Inbox {unreadInboxCount > 0 && (
 									   <span style={{ color: '#ff4757', fontWeight: 'bold', marginLeft: 6 }}>{unreadInboxCount}</span>
 								   )}
 							   </li>
-							   <li className={activeSection === 'announcement' ? 'active' : ''} onClick={() => { setActiveSection('announcement'); setSidebarOpen(false); }} style={{ background: activeSection === 'announcement' ? '#fff' : 'transparent', color: activeSection === 'announcement' ? '#010662' : '#fff', fontWeight: activeSection === 'announcement' ? 700 : 500, borderRadius: 8, margin: '8px 12px', padding: '12px 18px', cursor: 'pointer', transition: 'background 0.2s' }}>
-								   📢 Announcement
+							   <li className={activeSection === 'announcement' ? 'active' : ''} onClick={() => { setActiveSection('announcement'); setSidebarOpen(false); }} style={{ background: activeSection === 'announcement' ? '#fff' : 'transparent', color: activeSection === 'announcement' ? '#010662' : '#fff', fontWeight: activeSection === 'announcement' ? 700 : 500, borderRadius: 8, margin: '10px 12px', padding: '12px 18px', cursor: 'pointer', transition: 'background 0.2s', display: 'flex', alignItems: 'center', gap: '8px' }}>
+								   <FontAwesomeIcon icon={faBullhorn} style={{fontSize: '18px', color: (activeSection === 'announcement') ? '#f8bb08' : 'inherit', transition: 'color 0.2s'}} />
+								   Announcement
 							   </li>
-							   <li onClick={() => { handleManageAttendanceClick(); setSidebarOpen(false); }} style={{ background: 'transparent', color: '#fff', fontWeight: 500, borderRadius: 8, margin: '8px 12px', padding: '12px 18px', cursor: 'pointer', transition: 'background 0.2s' }}>
-								   📝 Attendance
+							   <li onClick={() => { handleManageAttendanceClick(); setSidebarOpen(false); }} style={{ background: 'transparent', color: '#fff', fontWeight: 500, borderRadius: 8, margin: '10px 12px', padding: '12px 18px', cursor: 'pointer', transition: 'background 0.2s', display: 'flex', alignItems: 'center', gap: '8px' }}>
+								   <FontAwesomeIcon icon={faClipboard} style={{fontSize: '18px', transition: 'color 0.2s'}} />
+								   Attendance
 							   </li>
 							   {/* Removed Subjects from sidebar */}
-							   <li onClick={() => { handleGoToFaceRecognition(); setSidebarOpen(false); }} style={{ background: 'transparent', color: '#fff', fontWeight: 500, borderRadius: 8, margin: '8px 12px', padding: '12px 18px', cursor: 'pointer', transition: 'background 0.2s' }}>
-								   🤳 Facial Recognition
+							   <li onClick={() => { handleGoToFaceRecognition(); setSidebarOpen(false); }} style={{ background: 'transparent', color: '#fff', fontWeight: 500, borderRadius: 8, margin: '10px 12px', padding: '12px 18px', cursor: 'pointer', transition: 'background 0.2s', display: 'flex', alignItems: 'center', gap: '8px' }}>
+								   <FontAwesomeIcon icon={faCamera} style={{fontSize: '18px', transition: 'color 0.2s'}} />
+								   Facial Recognition
 							   </li>
 							   <li 
 								className={activeSection === 'todayAttendance' ? 'active' : ''}
@@ -901,13 +912,17 @@ useEffect(() => {
 									color: activeSection === 'todayAttendance' ? '#010662' : '#fff',
 									fontWeight: activeSection === 'todayAttendance' ? 700 : 500,
 									borderRadius: 8,
-									margin: '8px 12px',
+									margin: '10px 12px',
 									padding: '12px 18px',
 									cursor: 'pointer',
-									transition: 'background 0.2s'
+									transition: 'background 0.2s',
+									display: 'flex',
+									alignItems: 'center',
+									gap: '8px'
 								}}
 								>
-								📋 Today Attendance
+								<FontAwesomeIcon icon={faListCheck} style={{fontSize: '18px', color: (activeSection === 'todayAttendance') ? '#f8bb08' : 'inherit', transition: 'color 0.2s'}} />
+								Today Attendance
 								</li>
 								 <li 
 								onClick={() => { 
@@ -920,15 +935,18 @@ useEffect(() => {
 								fontWeight: 700, 
 								borderRadius: 8, 
 								margin: '16px 12px 8px 12px', 
-								padding: '12px 1px', 
+								padding: '12px 18px', 
 								cursor: 'pointer', 
 								transition: 'all 0.2s',
 								border: 'none',
-								width: 'calc(100% - 14px)',
-								textAlign: 'center'
+								display: 'flex',
+								alignItems: 'center',
+								justifyContent: 'center',
+								gap: '8px'
 								}}
 								className="logout-button"
 							>
+								<FontAwesomeIcon icon={faSignOutAlt} style={{fontSize: '18px'}} />
 								Logout
 							</li>
 						   </ul>
@@ -951,74 +969,84 @@ useEffect(() => {
 						   onClick={() => setSidebarOpen(false)}
 					   />
 				   )}
-				<div className="admin-main-content" style={{ marginLeft: sidebarOpen ? 260 : 0, transition: 'margin-left 0.3s' }}>
-					   <header className="admin-header" style={{ paddingRight: 36, background: 'linear-gradient(90deg, #010662 0%, #38b2ac 100%)', color: '#fff', borderBottom: '2px solid #010662', boxShadow: '0 2px 8px rgba(1,6,98,0.08)' }}>
-  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-    <img
-      src="/logo.png"
-      alt="SPCC Logo"
-      className="logo-img"
-      style={{ 
-        margin: '5px 0 5px 60px', 
-        height: 'auto', 
-        maxHeight: '60px',
-        width: 'auto',
-        objectFit: 'contain'
-      }}
-    />
-    <div className="admin-user-info" style={{ display: 'flex', alignItems: 'center', gap: 18 }}>
-      <span 
-        className="icon profile-icon" 
-        style={{ 
-          fontSize: '24px', 
-          cursor: 'pointer',
-          padding: '4px',
-          borderRadius: '4px',
-          transition: 'background-color 0.2s'
-        }}
-        onClick={() => { 
-          setShowProfile(true); 
-          fetchProfile(); 
-        }}
-        title="View Profile"
-      >
-        👤
-      </span>
-      <span className="username" style={{ color: '#fff', fontWeight: 600 }}>{teacherName}</span>
-      <div style={{ position: 'relative', display: 'inline-block' }}>
-        <NotificationIcon 
-          unreadCount={unreadCount}
-          onClick={toggleNotifications}
-          color="#fff"
-        />
-        {unreadCount > 0 && (
-          <span style={{
-            position: 'absolute',
-            top: 2,
-            right: 2,
-            background: '#ff4757',
-            color: '#fff',
-            borderRadius: '50%',
-            minWidth: 18,
-            height: 18,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            fontSize: 10,
-            fontWeight: 'bold',
-            padding: '0 5px',
-            boxShadow: '0 2px 8px rgba(1,6,98,0.10)',
-            zIndex: 2
-          }}>
-            {unreadCount > 99 ? '99+' : unreadCount}
-          </span>
-        )}
-      </div>
-      <InboxIcon onClick={() => setActiveSection('inbox')} unreadCount={unreadInboxCount} color="#fff" />
-      
-    </div>
-  </div>
-</header>
+				<div className="admin-main-content" style={{ transition: 'margin-left 0.3s' }}>
+					   <header className="admin-header" style={{ background: 'linear-gradient(90deg, #010162 0%, #1a1a8a 100%)', color: '#fff', borderBottom: '2px solid #010162', boxShadow: '0 2px 8px rgba(1,1,98,0.15)', padding: 0, position: 'sticky', top: 0, zIndex: 100 }}>
+            <div className="admin-header-row" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '25px 24px', paddingLeft: '80px', gap: '20px', width: '100%', boxSizing: 'border-box' }}>
+              {/* Logo and School Name */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px', cursor: 'pointer' }} onClick={() => setActiveSection('overview')}>
+                <img
+                  src="/images/spcc-logo.png"
+                  alt="SPCC Logo"
+                  className="navbar-logo"
+                  style={{ 
+                    height: '45px',
+                    width: 'auto',
+                    objectFit: 'contain',
+                    filter: 'brightness(1.1)',
+                    background: 'transparent',
+                    padding: '0',
+                    flexShrink: 0
+                  }}
+                />
+                <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', lineHeight: '1.3', gap: '4px' }}>
+                  <span style={{ fontSize: '20px', fontWeight: '800', color: '#f8bb08', textTransform: 'uppercase', letterSpacing: '0.5px' }}>System Plus Computer College</span>
+                  <span style={{ fontSize: '14px', fontWeight: '700', color: '#fff' }}>Teacher Dashboard</span>
+                </div>
+              </div>
+
+              <div className="admin-user-info" style={{ display: 'flex', alignItems: 'center', gap: '20px', flexShrink: 0 }}>
+                <div style={{ position: 'relative', display: 'inline-block' }}>
+                  <NotificationIcon 
+                    unreadCount={unreadCount}
+                    onClick={toggleNotifications}
+                    color="#fff"
+                  />
+                  {unreadCount > 0 && (
+                    <span style={{
+                      position: 'absolute',
+                      top: -6,
+                      right: -6,
+                      background: '#ff4757',
+                      color: '#fff',
+                      borderRadius: '50%',
+                      padding: '2px 7px',
+                      fontSize: 13,
+                      fontWeight: 700,
+                      border: '2px solid #fff',
+                      zIndex: 2
+                    }}>
+                      {unreadCount > 99 ? '99+' : unreadCount}
+                    </span>
+                  )}
+                </div>
+                <InboxIcon onClick={() => setActiveSection('inbox')} unreadCount={unreadInboxCount} color="#fff" />
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <button
+                    style={{
+                      background: 'none',
+                      border: 'none',
+                      cursor: 'pointer',
+                      padding: '8px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center'
+                    }}
+                    title="User Profile"
+                    onMouseEnter={() => setHoveredIcon('userProfile')}
+                    onMouseLeave={() => setHoveredIcon(null)}
+                    onClick={() => { 
+                      setShowProfile(true); 
+                      fetchProfile(); 
+                    }}
+                  >
+                    <FontAwesomeIcon icon={faUser} style={{color: hoveredIcon === 'userProfile' ? '#f8bb08' : '#fff', fontSize: '20px', transition: 'color 0.2s'}} />
+                  </button>
+                  <span className="username" style={{ color: '#fff', fontWeight: 600 }}>Teacher</span>
+                </div>
+                
+              </div>
+            </div>
+          </header>
 					<NotificationDropdown
 						notifications={notificationList}
 						isOpen={isOpen}

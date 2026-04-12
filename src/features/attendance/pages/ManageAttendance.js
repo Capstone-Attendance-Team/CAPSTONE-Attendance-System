@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import './styles/ManageAttendance.css';
 import { fetchAttendance, deleteAttendance, updateAttendance } from './attendanceApi';
 import { fetchUserProfile } from '../../../api/userApi';
+import { getStatusWithColor } from '../../../utils/attendanceStatusHelper';
 import 'react-date-range/dist/styles.css';
 import 'react-date-range/dist/theme/default.css';
 
@@ -17,7 +18,9 @@ const ManageAttendance = () => {
     const [endDate, setEndDate] = useState("");
     const [selectedSection, setSelectedSection] = useState('');
     const [selectedSubject, setSelectedSubject] = useState('');
+    const [selectedTeacher, setSelectedTeacher] = useState('');
     const [allowedSubjects, setAllowedSubjects] = useState([]);
+    const [allowedTeachers, setAllowedTeachers] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
     const [attendanceData, setAttendanceData] = useState([]);
     const [allowedSections, setAllowedSections] = useState([]);
@@ -85,6 +88,19 @@ const ManageAttendance = () => {
                 });
                 setAllowedSubjects(Array.from(subjectSet));
 
+                // Extract unique teachers from attendance records
+                const teacherSet = new Set();
+                const teacherMap = new Map();
+                data.forEach(record => {
+                    if (record.recordedByName && record.recordedByName !== 'Unknown') {
+                        teacherSet.add(record.recordedByName);
+                        if (record.recordedBy) {
+                            teacherMap.set(record.recordedByName, record.recordedBy._id || record.recordedBy);
+                        }
+                    }
+                });
+                setAllowedTeachers(Array.from(teacherSet));
+
                 // Filter data for allowed sections if teacher has restricted access
                 const filtered = allowedSectionsArr.length > 0 
                     ? data.filter(record => allowedSectionsArr.includes(record.section))
@@ -135,12 +151,13 @@ const ManageAttendance = () => {
             
             const matchesSection = !selectedSection || record.section === selectedSection;
             const matchesSubject = !selectedSubject || record.subject === selectedSubject;
+            const matchesTeacher = !selectedTeacher || record.recordedByName === selectedTeacher;
             const matchesSearch = !searchTerm ||
                 (record.name && record.name.toLowerCase().includes(searchTerm.toLowerCase())) ||
                 (String(record.studentId).toLowerCase().includes(searchTerm.toLowerCase()));
-            return matchesDate && matchesSection && matchesSubject && matchesSearch;
+            return matchesDate && matchesSection && matchesSubject && matchesTeacher && matchesSearch;
         });
-    }, [attendanceData, selectedDate, startDate, endDate, selectedSection, selectedSubject, searchTerm]);
+    }, [attendanceData, selectedDate, startDate, endDate, selectedSection, selectedSubject, selectedTeacher, searchTerm]);
 
     // Summary statistics using filtered data
     const summary = useMemo(() => {
@@ -304,6 +321,20 @@ const ManageAttendance = () => {
                         ))}
                     </select>
                 </div>
+                <div className="filter-group">
+                    <label htmlFor="teacher">👨‍🏫 Filter by Teacher:</label>
+                    <select
+                        id="teacher"
+                        value={selectedTeacher}
+                        onChange={e => setSelectedTeacher(e.target.value)}
+                        disabled={allowedTeachers.length === 0}
+                    >
+                        <option value="">All Teachers</option>
+                        {allowedTeachers.map(teacher => (
+                            <option key={teacher} value={teacher}>{teacher}</option>
+                        ))}
+                    </select>
+                </div>
                 <div className="filter-group" style={{ display: 'flex', alignItems: 'flex-end', gap: '8px' }}>
                     <div style={{ display: 'flex', flexDirection: 'column' }}>
                         <label htmlFor="search">🔍 Search:</label>
@@ -375,8 +406,9 @@ const ManageAttendance = () => {
                                 <th>Section</th>
                                 <th>Subject</th>
                                 <th>Status</th>
+                                <th>Arrival Time</th>
                                 <th>Time</th>
-                                <th>Actions</th>
+                                <th>Recorded By</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -390,9 +422,32 @@ const ManageAttendance = () => {
                                                 <td>{record.section}</td>
                                                 <td>{record.subject}</td>
                                                 <td>
-                                                    <span className={`status-badge status-${record.status.toLowerCase()}`}>
-                                                        {record.status}
-                                                    </span>
+                                                    {(() => {
+                                                        const statusInfo = getStatusWithColor(record.arrivalTime);
+                                                        return (
+                                                            <span style={{
+                                                                background: statusInfo.background,
+                                                                color: statusInfo.text,
+                                                                border: `1px solid ${statusInfo.borderColor}`,
+                                                                padding: '6px 12px',
+                                                                borderRadius: '6px',
+                                                                fontWeight: 600,
+                                                                fontSize: '13px',
+                                                                display: 'inline-block'
+                                                            }}>
+                                                                {statusInfo.status.charAt(0).toUpperCase() + statusInfo.status.slice(1)}
+                                                            </span>
+                                                        );
+                                                    })()}
+                                                </td>
+                                                <td>
+                                                    {record.arrivalTime ? (
+                                                        <span style={{ fontWeight: 500, color: '#333' }}>
+                                                            {record.arrivalTime.substring(0, 5)}
+                                                        </span>
+                                                    ) : (
+                                                        <span style={{ color: '#999' }}>-</span>
+                                                    )}
                                                 </td>
                                                 <td>{(() => {
                                                     if (!record.timestamp || record.timestamp === '-') return '-';
@@ -414,31 +469,14 @@ const ManageAttendance = () => {
                                                     if (hour === 0) hour = 12;
                                                     return `${y}/${m}/${d} - ${hour}:${min} ${ampm}`;
                                                 })()}</td>
-                                                <td>
-                                                    <button
-                                                        onClick={() => alert('Edit functionality coming soon!')}
-                                                        className="delete-button"
-                                                        title="Edit Record"
-                                                        style={{ marginRight: '6px', display: 'flex', alignItems: 'center', gap: '4px', background: '#1976d2' }}
-                                                    >
-                                                        <span role="img" aria-label="edit">✏️</span> Edit
-                                                    </button>
-                                                    <button
-                                                        onClick={() => handleDeleteRecord(record._id)}
-                                                        className="delete-button"
-                                                        title="Delete Record"
-                                                        style={{ display: 'flex', alignItems: 'center', gap: '4px' }}
-                                                    >
-                                                        <span role="img" aria-label="delete">🗑️</span> Delete
-                                                    </button>
-                                                </td>
+                                                <td>{record.recordedByName || 'Unknown'}</td>
                                             </tr>
                                         ))}
                                     </React.Fragment>
                                 ))
                             ) : (
                                 <tr>
-                                    <td colSpan="7" className="empty-state">
+                                    <td colSpan="8" className="empty-state">
                                         No attendance records found for the selected criteria.
                                     </td>
                                 </tr>

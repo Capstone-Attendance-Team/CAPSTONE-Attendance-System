@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import * as XLSX from 'xlsx';
 import { useNavigate } from 'react-router-dom';
 import { useUser } from '../shared/UserContext';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faBars, faChartBar, faEnvelope, faUsers, faPhone, faBook, faComments, faSignOutAlt, faUser, faFileAlt, faPaperPlane, faInbox, faRefresh, faDownload, faX } from '@fortawesome/free-solid-svg-icons';
 import NotificationIcon from '../shared/components/NotificationIcon';
 import NotificationDropdown from '../shared/components/NotificationDropdown';
 import InboxIcon from '../shared/components/InboxIcon';
@@ -55,6 +57,8 @@ function DashboardAdmin() {
   const [inboxView, setInboxView] = useState('received');
   // Hamburger menu state for sidebar
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  // Hover states for icons
+  const [hoveredIcon, setHoveredIcon] = useState(null);
   // Announcements state (persisted in localStorage)
   const [announcements, setAnnouncements] = useState([]);
     useEffect(() => {
@@ -647,32 +651,6 @@ setAnnouncements(res.data);
     return (
       <div className="admin-dashboard-container">
         {/* Sidebar */}
-        {/* Hamburger button */}
-        <button
-          style={{
-            position: 'fixed',
-            top: 24,
-            left: 24,
-            zIndex: 10001,
-            background: '#010662',
-            color: '#fff',
-            border: 'none',
-            borderRadius: 8,
-            width: 48,
-            height: 48,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            boxShadow: '0 2px 8px rgba(1,6,98,0.10)',
-            cursor: 'pointer',
-            fontSize: 28
-          }}
-          onClick={() => setSidebarOpen(true)}
-          aria-label="Open sidebar"
-        >
-          <span style={{fontSize:32, lineHeight:0.8}}>☰</span>
-        </button>
-
         {/* Sidebar drawer */}
         <aside
           className="admin-sidebar"
@@ -696,58 +674,81 @@ setAnnouncements(res.data);
               style={{ background: 'none', border: 'none', color: '#fff', fontSize: 28, cursor: 'pointer', marginLeft: 8 }}
               onClick={() => setSidebarOpen(false)}
               aria-label="Close sidebar"
-            >×</button>
+            >
+              <FontAwesomeIcon icon={faX} style={{fontSize: '20px'}} />
+            </button>
           </div>
-          <nav className="admin-nav" style={{ marginTop: 18 }}>
+          <nav className="admin-nav" style={{ marginTop: 18, paddingTop: '8px', paddingBottom: '24px' }}>
             <ul style={{ color: '#fff' }}>
               <li 
                 className={activeSection === 'overview' ? 'active' : ''}
                 onClick={() => { setActiveSection('overview'); setSidebarOpen(false); }}
-                style={{ background: activeSection === 'overview' ? '#fff' : 'transparent', color: activeSection === 'overview' ? '#010662' : '#fff', fontWeight: activeSection === 'overview' ? 700 : 500, borderRadius: 8, margin: '8px 12px', padding: '12px 18px', cursor: 'pointer', transition: 'background 0.2s' }}
+                onMouseEnter={() => setHoveredIcon('overview')}
+                onMouseLeave={() => setHoveredIcon(null)}
+                style={{ background: activeSection === 'overview' ? '#fff' : 'transparent', color: activeSection === 'overview' ? '#010662' : '#fff', fontWeight: activeSection === 'overview' ? 700 : 500, borderRadius: 8, margin: '10px 12px', padding: '12px 18px', cursor: 'pointer', transition: 'background 0.2s', display: 'flex', alignItems: 'center', gap: '8px' }}
               >
-                📊 Admin Dashboard
+                <FontAwesomeIcon icon={faChartBar} style={{fontSize: '18px', color: (activeSection === 'overview' || hoveredIcon === 'overview') ? '#f8bb08' : 'inherit', transition: 'color 0.2s'}} />
+                Admin Dashboard
               </li>
               <li
                 className={activeSection === 'inbox' ? 'active' : ''}
                 onClick={() => { setActiveSection('inbox'); setSidebarOpen(false); }}
-                style={{ background: activeSection === 'inbox' ? '#fff' : 'transparent', color: activeSection === 'inbox' ? '#010662' : '#fff', fontWeight: activeSection === 'inbox' ? 700 : 500, borderRadius: 8, margin: '8px 12px', padding: '12px 18px', cursor: 'pointer', transition: 'background 0.2s' }}
+                onMouseEnter={() => setHoveredIcon('inbox-menu')}
+                onMouseLeave={() => setHoveredIcon(null)}
+                style={{ background: activeSection === 'inbox' ? '#fff' : 'transparent', color: activeSection === 'inbox' ? '#010662' : '#fff', fontWeight: activeSection === 'inbox' ? 700 : 500, borderRadius: 8, margin: '10px 12px', padding: '12px 18px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px' }}
               >
-                📥 Inbox
+                <FontAwesomeIcon icon={faEnvelope} style={{fontSize: '18px', color: (activeSection === 'inbox' || hoveredIcon === 'inbox-menu') ? '#f8bb08' : 'inherit', transition: 'color 0.2s'}} />
+                Inbox
               </li>
               <li 
                 className={activeSection === 'users' ? 'active' : ''}
                 onClick={() => { setActiveSection('users'); setSidebarOpen(false); }}
-                style={{ background: activeSection === 'users' ? '#fff' : 'transparent', color: activeSection === 'users' ? '#010662' : '#fff', fontWeight: activeSection === 'users' ? 700 : 500, borderRadius: 8, margin: '8px 12px', padding: '12px 18px', cursor: 'pointer', transition: 'background 0.2s' }}
+                onMouseEnter={() => setHoveredIcon('users')}
+                onMouseLeave={() => setHoveredIcon(null)}
+                style={{ background: activeSection === 'users' ? '#fff' : 'transparent', color: activeSection === 'users' ? '#010662' : '#fff', fontWeight: activeSection === 'users' ? 700 : 500, borderRadius: 8, margin: '10px 12px', padding: '12px 18px', cursor: 'pointer', transition: 'background 0.2s', display: 'flex', alignItems: 'center', gap: '8px' }}
               >
-                👥 User Management
+                <FontAwesomeIcon icon={faUsers} style={{fontSize: '18px', color: (activeSection === 'users' || hoveredIcon === 'users') ? '#f8bb08' : 'inherit', transition: 'color 0.2s'}} />
+                User Management
               </li>
               <li 
                 className={activeSection === 'students' ? 'active' : ''}
                 onClick={() => { setActiveSection('students'); setSidebarOpen(false); }}
-                style={{ background: activeSection === 'students' ? '#fff' : 'transparent', color: activeSection === 'students' ? '#010662' : '#fff', fontWeight: activeSection === 'students' ? 700 : 500, borderRadius: 8, margin: '8px 12px', padding: '12px 18px', cursor: 'pointer', transition: 'background 0.2s' }}
+                onMouseEnter={() => setHoveredIcon('students')}
+                onMouseLeave={() => setHoveredIcon(null)}
+                style={{ background: activeSection === 'students' ? '#fff' : 'transparent', color: activeSection === 'students' ? '#010662' : '#fff', fontWeight: activeSection === 'students' ? 700 : 500, borderRadius: 8, margin: '10px 12px', padding: '12px 18px', cursor: 'pointer', transition: 'background 0.2s', display: 'flex', alignItems: 'center', gap: '8px' }}
               >
-                🧑‍🎓 Manage Student
+                <FontAwesomeIcon icon={faPhone} style={{fontSize: '18px', color: (activeSection === 'students' || hoveredIcon === 'students') ? '#f8bb08' : 'inherit', transition: 'color 0.2s'}} />
+                Manage Student
               </li>
               <li 
                 className={activeSection === 'subjectSection' ? 'active' : ''}
                 onClick={() => { setActiveSection('subjectSection'); setSidebarOpen(false); }}
-                style={{ background: activeSection === 'subjectSection' ? '#fff' : 'transparent', color: activeSection === 'subjectSection' ? '#010662' : '#fff', fontWeight: activeSection === 'subjectSection' ? 700 : 500, borderRadius: 8, margin: '8px 12px', padding: '12px 18px', cursor: 'pointer', transition: 'background 0.2s' }}
+                onMouseEnter={() => setHoveredIcon('subjectSection')}
+                onMouseLeave={() => setHoveredIcon(null)}
+                style={{ background: activeSection === 'subjectSection' ? '#fff' : 'transparent', color: activeSection === 'subjectSection' ? '#010662' : '#fff', fontWeight: activeSection === 'subjectSection' ? 700 : 500, borderRadius: 8, margin: '10px 12px', padding: '12px 18px', cursor: 'pointer', transition: 'background 0.2s', display: 'flex', alignItems: 'center', gap: '8px' }}
               >
-                📚 Manage Subject/Section
+                <FontAwesomeIcon icon={faBook} style={{fontSize: '18px', color: (activeSection === 'subjectSection' || hoveredIcon === 'subjectSection') ? '#f8bb08' : 'inherit', transition: 'color 0.2s'}} />
+                Manage Subject/Section
               </li>
               <li 
                 className={activeSection === 'announcements' ? 'active' : ''}
                 onClick={() => { setActiveSection('announcements'); setSidebarOpen(false); }}
-                style={{ background: activeSection === 'announcements' ? '#fff' : 'transparent', color: activeSection === 'announcements' ? '#010662' : '#fff', fontWeight: activeSection === 'announcements' ? 700 : 500, borderRadius: 8, margin: '8px 12px', padding: '12px 18px', cursor: 'pointer', transition: 'background 0.2s' }}
+                onMouseEnter={() => setHoveredIcon('announcements')}
+                onMouseLeave={() => setHoveredIcon(null)}
+                style={{ background: activeSection === 'announcements' ? '#fff' : 'transparent', color: activeSection === 'announcements' ? '#010662' : '#fff', fontWeight: activeSection === 'announcements' ? 700 : 500, borderRadius: 8, margin: '10px 12px', padding: '12px 18px', cursor: 'pointer', transition: 'background 0.2s', display: 'flex', alignItems: 'center', gap: '8px' }}
               >
-                📢 Announcements
+                <FontAwesomeIcon icon={faComments} style={{fontSize: '18px', color: (activeSection === 'announcements' || hoveredIcon === 'announcements') ? '#f8bb08' : 'inherit', transition: 'color 0.2s'}} />
+                Announcements
               </li>
               <li 
                 className={activeSection === 'reports' ? 'active' : ''}
                 onClick={() => { setActiveSection('reports'); setSidebarOpen(false); }}
-                style={{ background: activeSection === 'reports' ? '#fff' : 'transparent', color: activeSection === 'reports' ? '#010662' : '#fff', fontWeight: activeSection === 'reports' ? 700 : 500, borderRadius: 8, margin: '8px 12px', padding: '12px 18px', cursor: 'pointer', transition: 'background 0.2s' }}
+                onMouseEnter={() => setHoveredIcon('reports')}
+                onMouseLeave={() => setHoveredIcon(null)}
+                style={{ background: activeSection === 'reports' ? '#fff' : 'transparent', color: activeSection === 'reports' ? '#010662' : '#fff', fontWeight: activeSection === 'reports' ? 700 : 500, borderRadius: 8, margin: '10px 12px', padding: '12px 18px', cursor: 'pointer', transition: 'background 0.2s', display: 'flex', alignItems: 'center', gap: '8px' }}
               >
-                📊 Reports
+                <FontAwesomeIcon icon={faChartBar} style={{fontSize: '18px', color: (activeSection === 'reports' || hoveredIcon === 'reports') ? '#f8bb08' : 'inherit', transition: 'color 0.2s'}} />
+                Reports
               </li>
               <li 
               onClick={() => { 
@@ -760,15 +761,18 @@ setAnnouncements(res.data);
                 fontWeight: 700, 
                 borderRadius: 8, 
                 margin: '16px 12px 8px 12px', 
-                padding: '12px 1px', 
+                padding: '12px 18px', 
                 cursor: 'pointer', 
                 transition: 'all 0.2s',
                 border: 'none',
-                width: 'calc(100% - 14px)',
-                textAlign: 'center'
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '8px'
               }}
               className="logout-button"
             >
+              <FontAwesomeIcon icon={faSignOutAlt} style={{fontSize: '18px'}} />
               Logout
             </li>
             </ul>
@@ -794,22 +798,56 @@ setAnnouncements(res.data);
         )}
 
         {/* Main Content */}
-        <div className="admin-main-content" style={{ marginLeft: sidebarOpen ? 260 : 0, transition: 'margin-left 0.3s' }}>
-          <header className="admin-header" style={{ background: 'linear-gradient(90deg, #010662 0%, #38b2ac 100%)', color: '#fff', borderBottom: '2px solid #010662', boxShadow: '0 2px 8px rgba(1,6,98,0.08)' }}>
-            <div className="admin-header-row" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-              <img
-  src="/logo.png"
-  alt="SPCC Logo"
-  className="logo-img"
-  style={{ 
-    margin: '5px 0 5px 60px', 
-    height: 'auto', 
-    maxHeight: '60px',
-    width: 'auto',
-    objectFit: 'contain'
-  }}
-/>
-              <div className="admin-user-info" style={{ display: 'flex', alignItems: 'center', gap: 18 }}>
+        <div className="admin-main-content" style={{ transition: 'margin-left 0.3s' }}>
+          <header className="admin-header" style={{ background: 'linear-gradient(90deg, #010162 0%, #1a1a8a 100%)', color: '#fff', borderBottom: '2px solid #010162', boxShadow: '0 2px 8px rgba(1,1,98,0.15)', padding: 0, position: 'sticky', top: 0, zIndex: 100 }}>
+            <div className="admin-header-row" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '25px 24px', gap: '20px', width: '100%', boxSizing: 'border-box' }}>
+              {/* Hamburger Button + Logo and School Name */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: '16px', minWidth: 0 }}>
+                <button
+                  style={{
+                    background: 'transparent',
+                    color: '#fff',
+                    border: 'none',
+                    borderRadius: '8px',
+                    width: '44px',
+                    height: '44px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    cursor: 'pointer',
+                    fontSize: '24px',
+                    flexShrink: 0
+                  }}
+                  onClick={() => setSidebarOpen(true)}
+                  aria-label="Open sidebar"
+                >
+                  <FontAwesomeIcon icon={faBars} style={{color: '#fff', fontSize: '20px'}} />
+                </button>
+                
+                {/* Logo and School Name */}
+                <div style={{ display: 'flex', alignItems: 'center', gap: '12px', cursor: 'pointer' }} onClick={() => setActiveSection('dashboard')}>
+                  <img
+                    src="/images/spcc-logo.png"
+                    alt="SPCC Logo"
+                    className="navbar-logo"
+                    style={{ 
+                      height: '45px',
+                      width: 'auto',
+                      objectFit: 'contain',
+                      filter: 'brightness(1.1)',
+                      background: 'transparent',
+                      padding: '0',
+                      flexShrink: 0
+                    }}
+                  />
+                  <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', lineHeight: '1.3', gap: '4px' }}>
+                    <span style={{ fontSize: '20px', fontWeight: '800', color: '#f8bb08', textTransform: 'uppercase', letterSpacing: '0.5px' }}>System Plus Computer College</span>
+                    <span style={{ fontSize: '14px', fontWeight: '700', color: '#fff' }}>Admin Dashboard</span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="admin-user-info" style={{ display: 'flex', alignItems: 'center', gap: '20px', flexShrink: 0 }}>
                 <div style={{ position: 'relative', display: 'inline-block' }}>
                   <NotificationIcon 
                     unreadCount={notifications.unreadCount}
@@ -835,8 +873,25 @@ setAnnouncements(res.data);
                   )}
                 </div>
                 <InboxIcon onClick={() => setActiveSection('inbox')} color="#fff" />
-                <span className="icon">👤</span>
-                <span className="username" style={{ color: '#fff', fontWeight: 600 }}>Administrator</span>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <button
+                    style={{
+                      background: 'none',
+                      border: 'none',
+                      cursor: 'pointer',
+                      padding: '8px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center'
+                    }}
+                    title="User Profile"
+                    onMouseEnter={() => setHoveredIcon('userProfile')}
+                    onMouseLeave={() => setHoveredIcon(null)}
+                  >
+                    <FontAwesomeIcon icon={faUser} style={{color: hoveredIcon === 'userProfile' ? '#f8bb08' : '#fff', fontSize: '20px', transition: 'color 0.2s'}} />
+                  </button>
+                  <span className="username" style={{ color: '#fff', fontWeight: 600 }}>Administrator</span>
+                </div>
                 
               </div>
             </div>
@@ -858,7 +913,8 @@ setAnnouncements(res.data);
             {activeSection === 'inbox' && (
               <div className="admin-inbox-section redesigned-inbox" style={{maxWidth: 700, margin: '0 auto', padding: 32}}>
                 <h2 style={{fontWeight: 700, fontSize: 28, color: '#2d3748', marginBottom: 18, display:'flex',alignItems:'center',gap:8}}>
-                  <span role="img" aria-label="inbox">📥</span> Admin Inbox
+                  <FontAwesomeIcon icon={faInbox} style={{fontSize: '28px', color: '#2d3748'}} />
+                  Admin Inbox
                 </h2>
                 {/* Toggle buttons for Received/Sent */}
                 <div style={{display:'flex',gap:12,marginBottom:16}}>
@@ -913,7 +969,7 @@ setAnnouncements(res.data);
                       boxShadow: '0 1px 4px rgba(49,130,206,0.08)'
                     }}
                   >
-                    <span role="img" aria-label="refresh">🔄</span>
+                    <FontAwesomeIcon icon={faRefresh} style={{fontSize: '20px'}} />
                   </button>
                 </div>
                 {showSendMessage && (
@@ -1052,7 +1108,13 @@ setAnnouncements(res.data);
         opacity:msg._id && msg._id.toString().startsWith('sent-') ? 0.7 : 1
       }}>
         <div style={{display:'flex',alignItems:'center',gap:12,marginBottom:6}}>
-          <span style={{fontSize:22}}>{isExcuse ? '📄' : (isSent ? '📤' : '📥')}</span>
+          {isExcuse ? (
+            <FontAwesomeIcon icon={faFileAlt} style={{fontSize: '20px', color: '#3182ce'}} />
+          ) : isSent ? (
+            <FontAwesomeIcon icon={faPaperPlane} style={{fontSize: '20px', color: '#3182ce'}} />
+          ) : (
+            <FontAwesomeIcon icon={faInbox} style={{fontSize: '20px', color: '#3182ce'}} />
+          )}
           <span style={{fontWeight:700,color:'#2b6cb0',fontSize:18}}>
             {isExcuse ? 'Excuse Letter' : 'Message'}
           </span>
@@ -1103,7 +1165,8 @@ setAnnouncements(res.data);
           {msg.fileUrl && (
             <div style={{marginTop:8}}>
               <a href={msg.fileUrl} download style={{color:'#3182ce',fontWeight:600,textDecoration:'underline',fontSize:15}}>
-                📎 Download Attachment
+                <FontAwesomeIcon icon={faDownload} style={{display: 'inline-block', marginRight: '4px', verticalAlign: 'middle', fontSize: '14px'}} />
+                Download Attachment
               </a>
             </div>
           )}
@@ -1131,29 +1194,38 @@ setAnnouncements(res.data);
           {activeSection === 'overview' && (
             <div className="dashboard-overview-section redesigned-overview">
               <h2 style={{fontWeight:700, fontSize:28, color:'#010662', marginBottom:24, display:'flex',alignItems:'center',gap:10}}>
-                <span role="img" aria-label="dashboard">📊</span> Admin Dashboard
+                <FontAwesomeIcon icon={faChartBar} style={{fontSize: '28px', color: '#010662'}} />
+                Admin Dashboard
               </h2>
               <div className="dashboard-overview-cards redesigned-cards">
                 <div className="dashboard-card redesigned-card" style={{background:'#e3f2fd', border: '2px solid #010662'}}>
-                  <div className="dashboard-card-icon" style={{fontSize:32, color:'#010662', marginBottom:8}}>👨‍🏫</div>
+                  <div className="dashboard-card-icon" style={{fontSize:32, color:'#010662', marginBottom:8}}>
+                    <FontAwesomeIcon icon={faUsers} style={{fontSize: '32px', color: '#010662'}} />
+                  </div>
                   <div className="dashboard-card-title">Teachers</div>
                   <div className="dashboard-card-value" style={{color:'#2196F3'}}>{userCounts.teacher}</div>
                   <div className="dashboard-card-desc">Registered teachers</div>
                 </div>
                 <div className="dashboard-card redesigned-card" style={{background:'#e6fffa', border: '2px solid #010662'}}>
-                  <div className="dashboard-card-icon" style={{fontSize:32, color:'#010662', marginBottom:8}}>👨‍👩‍👧</div>
+                  <div className="dashboard-card-icon" style={{fontSize:32, color:'#010662', marginBottom:8}}>
+                    <FontAwesomeIcon icon={faUsers} style={{fontSize: '32px', color: '#010662'}} />
+                  </div>
                   <div className="dashboard-card-title">Parents</div>
                   <div className="dashboard-card-value" style={{color:'#38b2ac'}}>{userCounts.parent}</div>
                   <div className="dashboard-card-desc">Registered parents</div>
                 </div>
                 <div className="dashboard-card redesigned-card" style={{background:'#fffbea', border: '2px solid #010662'}}>
-                  <div className="dashboard-card-icon" style={{fontSize:32, color:'#010662', marginBottom:8}}>🧑‍🎓</div>
+                  <div className="dashboard-card-icon" style={{fontSize:32, color:'#010662', marginBottom:8}}>
+                    <FontAwesomeIcon icon={faBook} style={{fontSize: '32px', color: '#010662'}} />
+                  </div>
                   <div className="dashboard-card-title">Students</div>
                   <div className="dashboard-card-value" style={{color:'#f6ad55'}}>{userCounts.student}</div>
                   <div className="dashboard-card-desc">Registered students</div>
                 </div>
                 <div className="dashboard-card redesigned-card" style={{background:'#ffeaea', border: '2px solid #010662'}}>
-                  <div className="dashboard-card-icon" style={{fontSize:32, color:'#010662', marginBottom:8}}>📝</div>
+                  <div className="dashboard-card-icon" style={{fontSize:32, color:'#010662', marginBottom:8}}>
+                    <FontAwesomeIcon icon={faChartBar} style={{fontSize: '32px', color: '#010662'}} />
+                  </div>
                   <div className="dashboard-card-title">Today's Attendance</div>
                   {/* Attendance Bar Graph */}
                   <div style={{ width: '100%', maxWidth: 320, margin: '0 auto', padding: '16px 0' }}>
@@ -1632,7 +1704,7 @@ setAnnouncements(res.data);
                     .map((user, idx) => (
                       <div className="dashboard-user-card" key={user._id || idx}>
                         <div className="dashboard-user-avatar" style={{background:user.type==='teacher'?'#e3f2fd':'#ffeaea',color:user.type==='teacher'?'#2196F3':'#ff4757'}}>
-                          {user.fullName ? user.fullName[0].toUpperCase() : (user.username ? user.username[0].toUpperCase() : '👤')}
+                          {user.fullName ? user.fullName[0].toUpperCase() : (user.username ? user.username[0].toUpperCase() : 'U')}
                         </div>
                         <div className="dashboard-user-info">
                           <div className="dashboard-user-name">{user.fullName || user.username}</div>
@@ -1663,7 +1735,7 @@ setAnnouncements(res.data);
                       <div>
                         {/* Placeholder for photo, can be replaced with real photo field */}
                         <div style={{width:100,height:100,borderRadius:'50%',background:'#e3f2fd',display:'flex',alignItems:'center',justifyContent:'center',fontSize:48,color:'#2196F3'}}>
-                          {profileUser.fullName ? profileUser.fullName[0] : '👤'}
+                          {profileUser.fullName ? profileUser.fullName[0] : 'U'}
                         </div>
                       </div>
                       <div>
@@ -1751,7 +1823,7 @@ setAnnouncements(res.data);
           {activeSection === 'announcements' && (
             <div className="dashboard-announcements-section" style={{maxWidth: 900, margin: '0 auto'}}>
               <div style={{display:'flex',alignItems:'center',gap:12,marginBottom:8}}>
-                <span style={{fontSize:32, color:'#2196F3'}}>📢</span>
+                <FontAwesomeIcon icon={faComments} style={{fontSize: '32px', color: '#2196F3'}} />
                 <h2 style={{fontWeight:700, fontSize:28, color:'#2196F3', margin:0}}>Announcements</h2>
               </div>
               <div className="announcement-form-card" style={{background:'#f8fafc',borderRadius:16,boxShadow:'0 2px 16px rgba(33,150,243,0.08)',padding:'32px 28px',marginBottom:32}}>

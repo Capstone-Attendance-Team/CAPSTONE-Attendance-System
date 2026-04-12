@@ -9,6 +9,7 @@ import * as faceapi from 'face-api.js';
 import { loadFaceApiModels, areModelsLoaded } from '../../../shared/faceApiLoader';
 import { debugFaceRecognition, debugDescriptor } from '../../../shared/debugHelper';
 import { addAttendance } from './attendanceApi';
+import { getStatusByArrivalTime } from '../../../utils/attendanceStatusHelper';
 
 function FaceRecognition() {
   const [scanning, setScanning] = useState(false);
@@ -24,25 +25,29 @@ function FaceRecognition() {
   const [selectedSection, setSelectedSection] = useState('');
   const [selectedSubject, setSelectedSubject] = useState('');
   const [scannedStudents, setScannedStudents] = useState([]); // Track scanned studentIds
+  const [teacherId, setTeacherId] = useState(null);
+  const [teacherName, setTeacherName] = useState('Unknown');
   const webcamRef = useRef(null);
   const navigate = useNavigate();
 
   useEffect(() => {
     // Fetch section/subject options and filter by teacher assignments
-    let teacherId = null;
+    let localTeacherId = null;
     let assignedSections = [];
     let assignedSubjects = [];
     // TODO: Replace with a prop, context, or backend session fetch
     // For now, try to get teacherId from a global or context (not localStorage)
     // Example: window.currentUser or from a React context
     if (window.currentUser && (window.currentUser.username || window.currentUser._id)) {
-      teacherId = window.currentUser._id || window.currentUser.username;
+      localTeacherId = window.currentUser._id || window.currentUser.username;
+      setTeacherId(localTeacherId);
+      setTeacherName(window.currentUser.fullName || window.currentUser.username || 'Unknown');
     }
     const fetchAndFilter = async () => {
       let profile = null;
-      if (teacherId) {
+      if (localTeacherId) {
         try {
-          profile = await fetchUserProfile(teacherId);
+          profile = await fetchUserProfile(localTeacherId);
         } catch {}
       }
       let allSections = [];
@@ -203,18 +208,25 @@ function FaceRecognition() {
     // Save attendance to backend if a match is found
     if (bestMatch && bestDistance < 0.6 && bestMatch.section === selectedSection) {
       try {
-        const localTime = new Date().toLocaleTimeString('en-US', { hour12: true, hour: '2-digit', minute: '2-digit', second: '2-digit' });
+        const now = new Date();
+        const localTime = now.toLocaleTimeString('en-US', { hour12: true, hour: '2-digit', minute: '2-digit', second: '2-digit' });
+        const arrivalTime = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`;
+        const status = getStatusByArrivalTime(arrivalTime);
+        
         const response = await addAttendance({
           name: bestMatch.fullName,
           studentId: bestMatch.studentId,
           section: bestMatch.section,
           subject: selectedSubject || '',
-          status: 'present',
+          status: status,
           timestamp: new Date().toISOString(),
           date: new Date().toISOString().slice(0, 10),
+          arrivalTime: arrivalTime,
           viaFacialRecognition: true,
           recordedAt: new Date().toISOString(),
           time: localTime,
+          recordedBy: teacherId,
+          recordedByName: teacherName,
           image: capturedImage // base64 image
         });
         setScannedStudents(prev => [...prev, bestMatch.studentId]); // Mark as scanned
@@ -286,17 +298,24 @@ function FaceRecognition() {
     // Only allow scan if bestMatch is in students (filtered by section) AND section matches selectedSection
     if (bestMatch && bestDistance < 0.6 && bestMatch.section === selectedSection) {
       try {
+        const now = new Date();
+        const arrivalTime = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`;
+        const status = getStatusByArrivalTime(arrivalTime);
+        
         const response = await addAttendance({
           name: bestMatch.fullName,
           studentId: bestMatch.studentId,
           section: bestMatch.section,
           subject: selectedSubject || '',
-          status: 'present',
+          status: status,
           timestamp: new Date().toISOString(),
           date: new Date().toISOString().slice(0, 10),
+          arrivalTime: arrivalTime,
           viaFacialRecognition: true,
           recordedAt: new Date().toISOString(),
-          time: new Date().toLocaleTimeString('en-US', { hour12: true, hour: '2-digit', minute: '2-digit' })
+          time: new Date().toLocaleTimeString('en-US', { hour12: true, hour: '2-digit', minute: '2-digit' }),
+          recordedBy: teacherId,
+          recordedByName: teacherName
         });
         console.log('Attendance POST response:', response);
         const scanTime = new Date().toLocaleTimeString('en-US', { hour12: true, hour: '2-digit', minute: '2-digit', second: '2-digit' });

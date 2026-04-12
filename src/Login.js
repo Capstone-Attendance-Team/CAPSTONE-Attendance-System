@@ -3,58 +3,124 @@ import { useUser } from '../shared/UserContext';
 import { useNavigate } from 'react-router-dom';
 import '../styles/Login.css';
 
-
 function Login() {
-	console.log('[DEBUG] Login component loaded');
 	const navigate = useNavigate();
 	const { setUser } = useUser();
 	const [username, setUsername] = useState('');
 	const [password, setPassword] = useState('');
 	const [rememberMe, setRememberMe] = useState(false);
 	const [errorMessage, setErrorMessage] = useState('');
+	const [isLoading, setIsLoading] = useState(false);
+
 	let renderError = null;
 	try {
 		const handleSubmit = async (e) => {
 			e.preventDefault();
+			setErrorMessage('');
+			
+			// Validation for empty fields
+			if (!username.trim()) {
+				setErrorMessage('Please enter your username');
+				return;
+			}
+			if (!password.trim()) {
+				setErrorMessage('Please enter your password');
+				return;
+			}
+
+			setIsLoading(true);
 			try {
-			const res = await fetch(`${process.env.REACT_APP_API_URL}/api/user/login`, {
+				const res = await fetch(`${process.env.REACT_APP_API_URL}/api/user/login`, {
 					method: 'POST',
 					headers: { 'Content-Type': 'application/json' },
 					body: JSON.stringify({ username, password })
 				});
 				const data = await res.json();
-				setErrorMessage('[DEBUG] Login response: ' + JSON.stringify(data));
+
 				if (res.ok && data.user) {
-					setErrorMessage('[DEBUG] Login user: ' + JSON.stringify(data.user));
 					setUser(data.user);
-					if (data.user.role === 'admin') {
-						setErrorMessage('Login successful as admin! Redirecting...');
+					const userType = data.user.type;
+
+					if (userType === 'admin') {
 						navigate('/admin-dashboard');
-					} else if (data.user.role === 'teacher') {
-						setErrorMessage('Login successful as teacher! Redirecting...');
+					} else if (userType === 'teacher') {
 						navigate('/dashboard');
-					} else if (data.user.role === 'parent') {
-						setErrorMessage('Login successful as parent! Redirecting...');
+					} else if (userType === 'parent') {
 						navigate('/parent-dashboard');
 					} else {
-						setErrorMessage('Unknown user role: ' + data.user.role);
+						setErrorMessage('Unable to determine user type. Please contact support.');
 					}
 				} else {
-					setErrorMessage('[ERROR] ' + (data.message || 'Login failed.'));
+					// Invalid credentials
+					setErrorMessage('Invalid username or password. Please try again.');
 				}
 			} catch (err) {
-				setErrorMessage('[EXCEPTION] Login failed: ' + err.message);
+				setErrorMessage('Connection error. Please check your internet and try again.');
+			} finally {
+				setIsLoading(false);
 			}
 		};
+
 		return (
 			<div className="login-page">
-				<div style={{ color: 'blue', fontWeight: 'bold' }}>[DEBUG] Login component loaded</div>
-				<form onSubmit={handleSubmit}>
-					<input type="text" value={username} onChange={e => setUsername(e.target.value)} placeholder="Username" />
-					<input type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder="Password" />
-					<button type="submit">Login</button>
-					{errorMessage && <div className="error-message">{errorMessage}</div>}
-				</form>
+				<div className="login-left">
+					<div className="login-left-overlay"></div>
+				</div>
+
+				<div className="login-right">
+					<form onSubmit={handleSubmit} className="login-form">
+						{/* Form Header with Logo and School Name */}
+						<div className="form-header">
+							<img
+								src="/spcclogo.png"
+								alt="SPCC Logo"
+								className="form-logo"
+							/>
+							<h1 className="form-title">System Plus Computer College</h1>
+							<p className="form-subtitle">Attendance System</p>
+						</div>
+
+						<div className="form-group">
+							<input
+								type="text"
+								placeholder="Username"
+								value={username}
+								onChange={(e) => setUsername(e.target.value)}
+								disabled={isLoading}
+								required
+							/>
+						</div>
+						<div className="form-group">
+							<input
+								type="password"
+								placeholder="Password"
+								value={password}
+								onChange={(e) => setPassword(e.target.value)}
+								disabled={isLoading}
+								required
+							/>
+						</div>
+						<label className="remember-me">
+							<input
+								type="checkbox"
+								checked={rememberMe}
+								onChange={(e) => setRememberMe(e.target.checked)}
+								disabled={isLoading}
+							/>
+							Remember me
+						</label>
+						<button type="submit" className="login-button" disabled={isLoading}>
+							{isLoading ? 'Signing in...' : 'Sign In'}
+						</button>
+						{/* Error message */}
+						{errorMessage && <div className="error-message">{errorMessage}</div>}
+						<div className="login-links">
+							<button type="button" className="link-button" onClick={() => alert('Feature coming soon!')}>
+								Forgot password?
+							</button>
+						</div>
+					</form>
+				</div>
 			</div>
 		);
 	} catch (err) {

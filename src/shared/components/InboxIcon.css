@@ -10,7 +10,7 @@
   line-height: 1;
 }
 .inbox-icon:hover {
-  background: #f0f0f0;
+  /* hover effect removed - icon color handles feedback */
 }
 .inbox-icon svg {
   display: block;

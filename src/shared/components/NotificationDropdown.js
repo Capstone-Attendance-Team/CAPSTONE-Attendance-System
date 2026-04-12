@@ -1,4 +1,6 @@
 import React from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faBell, faCheck, faX, faTrash, faBullhorn } from '@fortawesome/free-solid-svg-icons';
 import './NotificationDropdown.css';
 
 const NotificationDropdown = ({
@@ -49,7 +51,10 @@ const NotificationDropdown = ({
     <div className="notification-backdrop" onClick={handleBackdropClick}>
       <div className="notification-dropdown">
         <div className="notification-header">
-          <h3>🔔 Notifications</h3>
+          <h3 style={{display: 'flex', alignItems: 'center', gap: '8px', margin: 0}}>
+            <FontAwesomeIcon icon={faBell} style={{fontSize: '20px'}} />
+            Notifications
+          </h3>
           <div className="notification-actions">
             {notifications.some(n => !(n.read ?? n.isRead)) && (
               <button
@@ -57,7 +62,8 @@ const NotificationDropdown = ({
                 onClick={onMarkAllAsRead}
                 title="Mark all as read"
               >
-                ✓ All
+                <FontAwesomeIcon icon={faCheck} style={{fontSize: '14px', marginRight: '4px'}} />
+                All
               </button>
             )}
             <button
@@ -65,7 +71,7 @@ const NotificationDropdown = ({
               onClick={onClose}
               title="Close"
             >
-              ✕
+              <FontAwesomeIcon icon={faX} style={{fontSize: '16px'}} />
             </button>
           </div>
         </div>
@@ -77,9 +83,13 @@ const NotificationDropdown = ({
               <li
                 key={n._id || n.id}
                 className={`notification-item ${!(n.read ?? n.isRead) ? 'unread' : 'read'}`}
-                style={{ borderLeft: `4px solid ${getPriorityColor(n.priority)}` }}
+                style={{
+                  borderLeft: `4px solid ${getPriorityColor(n.priority)}`
+                }}
               >
-                <span className="notification-icon">{n.icon}</span>
+                <span className="notification-icon">
+                  <FontAwesomeIcon icon={faBullhorn} style={{fontSize: '24px', color: '#ff4757'}} />
+                </span>
                 <div className="notification-info">
                   <div className="notification-title">
                     {n.title || n.message || n.content}
@@ -101,9 +111,13 @@ const NotificationDropdown = ({
                 </div>
                 <div className="notification-actions">
                   {!(n.read ?? n.isRead) && (
-                    <button className="mark-read-btn" onClick={() => onMarkAsRead(n._id || n.id)} title="Mark as read">✓</button>
+                    <button className="mark-read-btn" onClick={() => onMarkAsRead(n._id || n.id)} title="Mark as read">
+                      <FontAwesomeIcon icon={faCheck} style={{fontSize: '16px'}} />
+                    </button>
                   )}
-                  <button className="delete-btn" onClick={() => onDelete(n._id || n.id)} title="Delete">🗑️</button>
+                  <button className="delete-btn" onClick={() => onDelete(n._id || n.id)} title="Delete">
+                    <FontAwesomeIcon icon={faTrash} style={{fontSize: '16px'}} />
+                  </button>
                 </div>
               </li>
             ))

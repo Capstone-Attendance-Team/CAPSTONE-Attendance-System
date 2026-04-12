@@ -34,3 +34,45 @@ secrets/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+# IDE & Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Build outputs
+dist/
+out/
+
+# Logs
+logs/
+lerna-debug.log*
+
+# OS files
+Thumbs.db
+
+# Optional npm/yarn cache
+.npm
+.yarn/cache/
+
+# Local development
+.env.*.local
+.cache/
+
+# Test coverage
+coverage/
+*.lcov
+
+# Backend environment
+backend/.env
+backend/.env.local
+
+# Old reference documentation (replaced by Render deployment guide)
+DEPLOYMENT_QUICK_GUIDE.md
+DEPLOYMENT_RAILWAY_NETLIFY.md
+ATLAS_COPY_PASTE.md
+ATLAS_QUICK_REFERENCE.md
+FEATURE_IMPLEMENTATION_PLAN.md
+MONGODB_SETUP.md
