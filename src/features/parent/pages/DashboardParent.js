@@ -372,32 +372,6 @@ function handleAnnouncementMarkAsRead(announcementId) {
   };
   return (
     <div className="admin-dashboard-container" style={{ position: 'relative', minHeight: '100vh', overflowX: 'hidden' }}>
-      {/* Hamburger menu button - above header */}
-      {!sidebarOpen && (
-      <button
-        className="hamburger-menu-btn"
-        style={{
-          position: 'fixed',
-          top: 24,
-          left: 24,
-          zIndex: 10001,
-          background: 'transparent',
-          border: 'none',
-          borderRadius: 8,
-          width: 48,
-          height: 48,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          cursor: 'pointer',
-          fontSize: 28
-        }}
-        aria-label="Open sidebar menu"
-        onClick={() => setSidebarOpen(true)}
-      >
-        <FontAwesomeIcon icon={faBars} style={{color: '#fff', fontSize: '20px'}} />
-      </button>
-      )}
       {/* Header - fixed at top, full width */}
       <header
         style={{
@@ -416,7 +390,29 @@ function handleAnnouncementMarkAsRead(announcementId) {
           justifyContent: 'space-between'
         }}
       >
-        <div style={{ display: 'flex', alignItems: 'center', padding: '25px 24px', paddingLeft: '80px', gap: '12px', cursor: 'pointer', minWidth: 0 }}>
+        <div style={{ display: 'flex', alignItems: 'center', padding: '25px 24px', gap: '12px', cursor: 'pointer', minWidth: 0 }}>
+          {/* Hamburger Menu Button */}
+          <button
+            className="hamburger-menu-btn"
+            style={{
+              background: 'transparent',
+              border: 'none',
+              borderRadius: 8,
+              width: 44,
+              height: 44,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              cursor: 'pointer',
+              flexShrink: 0
+            }}
+            aria-label="Open sidebar menu"
+            onClick={() => setSidebarOpen(true)}
+          >
+            <FontAwesomeIcon icon={faBars} style={{color: '#fff', fontSize: '20px'}} />
+          </button>
+
+          {/* Logo */}
           <img
             src="/images/spcc-logo.png"
             alt="SPCC Logo"
@@ -431,14 +427,14 @@ function handleAnnouncementMarkAsRead(announcementId) {
               flexShrink: 0
             }}
           />
-          <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', lineHeight: '1.1' }}>
-            <span style={{ fontSize: '12px', fontWeight: '600', color: '#f8bb08', textTransform: 'uppercase', letterSpacing: '0.5px' }}>SPCC</span>
-            <span style={{ fontSize: '15px', fontWeight: '700', color: '#fff' }}>Parent Dashboard</span>
+          <div className="navbar-school-name" style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', lineHeight: '1.3', gap: '4px' }}>
+            <span style={{ fontSize: '20px', fontWeight: '800', color: '#f8bb08', textTransform: 'uppercase', letterSpacing: '0.5px' }}>System Plus Computer College</span>
+            <span style={{ fontSize: '14px', fontWeight: '700', color: '#fff' }}>Parent Dashboard</span>
           </div>
         </div>
-        <div className="admin-user-info" style={{ display: 'flex', alignItems: 'center', gap: '20px', padding: '25px 24px', flexShrink: 0 }}>
+        <div className="navbar-right-icons" style={{ display: 'flex', alignItems: 'center', gap: '20px', padding: '25px 24px', flexShrink: 0 }}>
           <InboxIcon unreadCount={unreadInboxCount} onClick={() => setActiveSection('inbox')} color="#fff" />
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <div className="navbar-user-profile" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
             <button
               style={{
                 background: 'none',
@@ -476,6 +472,22 @@ function handleAnnouncementMarkAsRead(announcementId) {
         }}
       >
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '18px 18px 0 18px' }}>
+          {/* Logo and SPCC Title */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+            <img
+              src="/images/spcc-logo.png"
+              alt="SPCC Logo"
+              style={{ 
+                height: '40px',
+                width: 'auto',
+                objectFit: 'contain',
+                filter: 'brightness(1.1)',
+                background: 'transparent',
+                padding: '0'
+              }}
+            />
+            <span style={{ fontSize: '13px', fontWeight: '700', color: '#f8bb08', letterSpacing: '0.5px' }}>SPCC</span>
+          </div>
           <button
             onClick={() => setSidebarOpen(false)}
             aria-label="Close sidebar menu"
@@ -552,14 +564,11 @@ function handleAnnouncementMarkAsRead(announcementId) {
           }}
         />
       )}
-      {/* Main content, shifts right on mobile when sidebar is open */}
+      {/* Main content, no shift when sidebar is open */}
       <main
         className="admin-main-content"
         style={{
-          marginLeft: sidebarOpen ? 260 : 0,
-          marginTop: 80, // match thicker header
-          transition: 'margin-left 0.25s cubic-bezier(.4,1.6,.6,1), transform 0.25s cubic-bezier(.4,1.6,.6,1)',
-          transform: sidebarOpen ? 'translateX(260px)' : 'translateX(0)',
+          transition: 'margin-left 0.25s cubic-bezier(.4,1.6,.6,1)',
         }}
       >
         {activeSection === 'inbox' && (
@@ -702,13 +711,13 @@ function handleAnnouncementMarkAsRead(announcementId) {
           </div>
         )}
         {activeSection === 'excuse' && (
-          <div style={{ padding: '32px', maxWidth: 800, margin: '0 auto' }}>
+          <div className="excuse-letter-container" style={{ padding: '32px', maxWidth: 800, margin: '0 auto' }}>
             <h2 style={{ marginBottom: 8, fontWeight: 900, fontSize:'2rem', background: gradientMain, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', letterSpacing: 1, textAlign:'center' }}>
               <span style={{marginRight:8, fontSize:'2.2rem'}}>📄</span>Excuse Letter Submission
             </h2>
-            <form onSubmit={handleExcuseFormSubmit} style={{background: gradientAlt, borderRadius:18, padding:'32px 40px', boxShadow:`0 6px 32px ${primaryColor}22`, display:'flex', flexDirection:'column', gap:20, maxWidth:540, margin:'0 auto', border:`2px solid ${primaryColor}`}}>
+            <form className="excuse-letter-form" onSubmit={handleExcuseFormSubmit} style={{background: gradientAlt, borderRadius:18, padding:'32px 40px', boxShadow:`0 6px 32px ${primaryColor}22`, display:'flex', flexDirection:'column', gap:20, maxWidth:540, margin:'0 auto', border:`2px solid ${primaryColor}`}}>
               <div style={{fontWeight:700,fontSize:'1.15rem',marginBottom:4,color:primaryColor}}>Select Teacher:</div>
-              <select name="teacher" value={excuseForm.teacher} onChange={handleExcuseFormChange} required style={{marginBottom:8,background:'#e6fffa',borderRadius:8,padding:'10px 0',border:`1px solid ${primaryColor}`,fontSize:'1.05rem', color: primaryColor}}>
+              <select name="teacher" value={excuseForm.teacher} onChange={handleExcuseFormChange} required style={{marginBottom:8,background:'#e6fffa',borderRadius:8,padding:'10px 12px',border:`1px solid ${primaryColor}`,fontSize:'1.05rem', color: primaryColor}}>      
                 <option value="">-- Select a Teacher --</option>
                 {teachers.map(t => (
                   <option key={t._id} value={t._id}>{t.fullName || t.name || t.username}</option>
@@ -720,10 +729,10 @@ function handleAnnouncementMarkAsRead(announcementId) {
               <div style={{fontWeight:700,fontSize:'1.15rem',marginBottom:4,color:primaryColor}}>Reason for Absence:</div>
               <textarea name="reason" value={excuseForm.reason} onChange={handleExcuseFormChange} required style={{minHeight:70,padding:14,borderRadius:10,border:`1.5px solid ${primaryColor}`,fontSize:'1.05rem',background:'#fff',boxShadow:`0 2px 8px ${primaryColor}22`, color: primaryColor}} placeholder="Describe the reason for absence..." />
               <div style={{fontWeight:700,fontSize:'1.15rem',marginBottom:4,color:primaryColor}}>Date of Absence:</div>
-              <input type="date" name="date" value={excuseForm.date} onChange={handleExcuseFormChange} required style={{marginBottom:8,background:'#e6fffa',borderRadius:8,padding:'8px 0',border:`1px solid ${primaryColor}`, color: primaryColor}} />
+              <input type="date" name="date" value={excuseForm.date} onChange={handleExcuseFormChange} required style={{marginBottom:8,background:'#e6fffa',borderRadius:8,padding:'10px 12px',border:`1px solid ${primaryColor}`, color: primaryColor}} />
               <div style={{fontWeight:700,fontSize:'1.15rem',marginBottom:4,color:primaryColor}}>Upload Supporting Document:</div>
-              <input type="file" name="file" accept="image/*,.pdf,.doc,.docx" onChange={handleExcuseFormChange} style={{marginBottom:8,background:'#e6fffa',borderRadius:8,padding:'8px 0',border:`1px solid ${primaryColor}`, color: primaryColor}} />
-              <button type="submit" style={{marginTop:8,background: gradientMain, color:'#fff',borderRadius:10,padding:'12px 0',fontWeight:900,border:'none',fontSize:'1.15rem',cursor:'pointer',boxShadow:`0 2px 8px ${primaryColor}22`,letterSpacing:1,transition:'transform 0.1s'}}
+              <input type="file" name="file" accept="image/*,.pdf,.doc,.docx" onChange={handleExcuseFormChange} style={{marginBottom:8,background:'#e6fffa',borderRadius:8,padding:'10px 12px',border:`1px solid ${primaryColor}`, color: primaryColor}} />
+              <button type="submit" style={{marginTop:8,background: gradientMain, color:'#fff',borderRadius:10,padding:'12px 16px',fontWeight:900,border:'none',fontSize:'1.15rem',cursor:'pointer',boxShadow:`0 2px 8px ${primaryColor}22`,letterSpacing:1,transition:'transform 0.1s'}}
                 onMouseDown={e => e.currentTarget.style.transform = 'scale(0.97)'}
                 onMouseUp={e => e.currentTarget.style.transform = 'scale(1)'}
               >
@@ -731,7 +740,7 @@ function handleAnnouncementMarkAsRead(announcementId) {
               </button>
               {excuseStatus && <div style={{marginTop:8,color:primaryColor,fontWeight:700,fontSize:'1.08rem',textAlign:'center',animation:'fadeIn 1s'}}>{excuseStatus}</div>}
             </form>
-            <div style={{marginTop:40}}>
+            <div className="excuse-letters-container" style={{marginTop:40}}>
               <h3 style={{fontWeight:900,color:primaryColor,marginBottom:20,fontSize:'1.3rem',textAlign:'center',letterSpacing:1}}><span style={{marginRight:8,fontSize:'1.3rem'}}>�</span>Submitted Excuse Letters</h3>
               {sentMessages.length === 0 ? (
                 <div style={{background:'linear-gradient(90deg, #fffbea 0%, #e6fffa 100%)',padding:'22px',borderRadius:12,color:'#f6ad55',fontWeight:700,boxShadow:'0 2px 8px rgba(246,173,85,0.10)',textAlign:'center',fontSize:'1.08rem'}}>No excuse letters submitted yet.</div>
@@ -740,7 +749,7 @@ function handleAnnouncementMarkAsRead(announcementId) {
                   {sentMessages.map(letter => {
                     const teacherName = teachers.find(t => t._id === (letter.recipient?.id || letter.recipient))?.fullName || 'Unknown';
                     return (
-                      <div key={letter._id} style={{background: gradientCard, borderRadius:16, boxShadow:`0 6px 32px ${primaryColor}22`, padding:'24px 28px', minWidth:260, maxWidth:340, display:'flex', flexDirection:'column', gap:12, position:'relative', color:'#fff', border:`2px solid #fff`}}>
+                      <div key={letter._id} className="excuse-letter-card" style={{background: gradientCard, borderRadius:16, boxShadow:`0 6px 32px ${primaryColor}22`, padding:'24px 28px', minWidth:260, maxWidth:340, display:'flex', flexDirection:'column', gap:12, position:'relative', color:'#fff', border:`2px solid #fff`}}>
                         <div style={{position:'absolute',top:18,right:18,fontSize:'2rem',opacity:0.13}}>📄</div>
                         <div style={{fontWeight:900,fontSize:'1.15rem',marginBottom:4,letterSpacing:1}}><span style={{marginRight:8}}>📝</span>{letter.reason}</div>
                         {/* Show approver name if excuse letter is approved */}

@@ -37,12 +37,18 @@
   color: #fff;
   font-weight: 700;
   border-radius: 7px;
-  padding: 10px 0;
+  padding: 12px 16px;
   font-size: 1.08em;
   border: none;
   cursor: pointer;
   box-shadow: 0 1px 4px rgba(49,130,206,0.08);
   transition: background 0.2s;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  white-space: normal;
+  word-wrap: break-word;
 }
 .announcement-form button:disabled {
   opacity: 0.6;
@@ -132,4 +138,171 @@
 }
 .notification-item button:hover {
   background: #e53e3e;
+}
+
+/* Mobile Responsive Styles for Announcement Form */
+@media (max-width: 767px) {
+  .announcement-form {
+    background: #f7fafc;
+    padding: 16px 12px;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+    max-width: 100% !important;
+    margin: 0 12px 16px 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    width: calc(100% - 24px);
+    box-sizing: border-box;
+  }
+
+  .announcement-form-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #3182ce;
+    margin-bottom: 8px;
+  }
+
+  .announcement-form input,
+  .announcement-form textarea {
+    width: 100%;
+    padding: 10px 12px;
+    font-size: 16px;
+    border-radius: 6px;
+    border: 1px solid #cbd5e0;
+    margin-top: 4px;
+    transition: border-color 0.2s;
+    box-sizing: border-box;
+    min-width: 0;
+  }
+
+  .announcement-form button {
+    background: linear-gradient(90deg,#3182ce 60%,#38a169 100%);
+    color: #fff;
+    font-weight: 700;
+    border-radius: 6px;
+    padding: 10px 8px;
+    font-size: 0.85rem;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 1px 4px rgba(49,130,206,0.08);
+    transition: background 0.2s;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    white-space: normal;
+    word-break: break-word;
+    width: 100%;
+    box-sizing: border-box;
+    line-height: 1.3;
+    text-align: center;
+  }
+
+  .announcement-form button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
+  .announcement-success,
+  .announcement-error {
+    font-weight: 600;
+    text-align: center;
+    font-size: 0.9rem;
+    padding: 8px;
+    border-radius: 6px;
+  }
+
+  .announcement-success {
+    color: #38a169;
+    background: #e6fffa;
+  }
+
+  .announcement-error {
+    color: #e53e3e;
+    background: #ffeaea;
+  }
+
+  .announcement-list {
+    background: #f7fafc;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+    padding: 16px 12px;
+    margin: 0 12px 16px 12px;
+    max-width: 100% !important;
+    width: calc(100% - 24px);
+    box-sizing: border-box;
+  }
+
+  .notification-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 12px 0;
+    border-bottom: 1px solid #e2e8f0;
+    background: #fff;
+    border-radius: 8px;
+    margin-bottom: 8px;
+    box-shadow: 0 1px 4px rgba(49,130,206,0.04);
+  }
+
+  .notification-icon {
+    font-size: 1.5rem;
+    margin-right: 6px;
+    flex-shrink: 0;
+  }
+
+  .notification-info {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .notification-title {
+    font-weight: 700;
+    font-size: 1rem;
+    color: #2d3748;
+    word-break: break-word;
+  }
+
+  .notification-message {
+    margin: 4px 0 0 0;
+    color: #4a5568;
+    font-size: 0.95rem;
+    word-break: break-word;
+  }
+
+  .notification-sender {
+    color: #718096;
+    font-size: 0.9rem;
+    margin-top: 2px;
+  }
+
+  .notification-time {
+    color: #3182ce;
+    font-size: 0.85rem;
+    margin-top: 2px;
+  }
+
+  .notification-item button {
+    background: #ff4757;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 8px 12px;
+    cursor: pointer;
+    font-weight: 600;
+    margin-left: auto;
+    margin-top: 8px;
+    transition: background 0.2s;
+    font-size: 0.8rem;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .notification-item button:hover {
+    background: #e53e3e;
+  }
 }

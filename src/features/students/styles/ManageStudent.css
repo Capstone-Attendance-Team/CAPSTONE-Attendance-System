@@ -333,3 +333,306 @@
     max-width: 100%;
   }
 }
+
+/* Mobile-specific styles for ManageStudent */
+@media (max-width: 767px) {
+  .manage-student-container {
+    margin: 12px auto;
+    padding: 12px 12px;
+    border-radius: 12px;
+  }
+
+  .header-section {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  /* Search and filter row - stack on mobile */
+  .student-search-filter-row {
+    flex-direction: column !important;
+    gap: 10px !important;
+    align-items: stretch !important;
+    margin-bottom: 16px !important;
+  }
+
+  .student-search-filter-row input,
+  .student-search-filter-row select,
+  .student-search-filter-row button {
+    width: 100% !important;
+    padding: 10px 12px !important;
+    font-size: 0.9rem !important;
+    box-sizing: border-box !important;
+  }
+
+  .student-controls {
+    width: 100%;
+    padding: 16px 12px;
+    border-radius: 10px;
+  }
+
+  /* Form inputs - full width on mobile */
+  .form-inputs {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .form-inputs input {
+    max-width: 100% !important;
+    width: 100% !important;
+    padding: 10px 12px !important;
+    font-size: 16px !important;
+    margin-bottom: 0 !important;
+  }
+
+  .form-inputs select {
+    width: 100% !important;
+    padding: 10px 12px !important;
+    font-size: 16px !important;
+    margin-bottom: 8px !important;
+  }
+
+  /* Form rows - stack on mobile */
+  .student-form-row {
+    flex-direction: column !important;
+    gap: 8px !important;
+    align-items: stretch !important;
+  }
+
+  .student-form-row select {
+    width: 100% !important;
+    flex: 1 !important;
+  }
+
+  /* Photo button row - side by side on mobile */
+  .photo-button-row {
+    display: flex !important;
+    gap: 8px !important;
+    width: 100% !important;
+    flex-wrap: wrap !important;
+  }
+
+  .photo-button-row button,
+  .photo-button-row label {
+    flex: 1 1 45% !important;
+    padding: 10px 8px !important;
+    font-size: 0.8rem !important;
+    box-sizing: border-box !important;
+    white-space: normal !important;
+    height: auto !important;
+    min-height: 44px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+
+  /* Form actions */
+  .form-actions {
+    flex-direction: column !important;
+    gap: 8px !important;
+    margin-top: 12px !important;
+  }
+
+  .form-actions button,
+  .primary-button,
+  .secondary-button {
+    width: 100% !important;
+    padding: 10px 16px !important;
+    font-size: 0.95rem !important;
+  }
+
+  /* Photo section on mobile */
+  .photo-section {
+    margin-bottom: 12px !important;
+  }
+
+  .photo-label {
+    font-size: 0.95rem !important;
+    margin-bottom: 6px !important;
+  }
+
+  /* Camera/photo buttons - side by side on mobile */
+  .camera-button,
+  .capture-button,
+  .cancel-button,
+  .retake-button,
+  .take-photo-btn,
+  .upload-photo-btn {
+    padding: 10px 12px !important;
+    font-size: 0.85rem !important;
+  }
+
+  /* Two-button layout */
+  .photo-button-row {
+    display: flex !important;
+    gap: 8px !important;
+    width: 100% !important;
+  }
+
+  .photo-button-row button {
+    flex: 1 !important;
+    padding: 10px 8px !important;
+    font-size: 0.8rem !important;
+  }
+
+  /* Camera controls - stack on mobile */
+  .camera-controls {
+    flex-direction: column !important;
+    gap: 8px !important;
+    margin-top: 10px !important;
+  }
+
+  .camera-controls button {
+    width: 100% !important;
+    padding: 10px 12px !important;
+    font-size: 0.85rem !important;
+    box-sizing: border-box !important;
+  }
+
+  /* Webcam preview on mobile */
+  .webcam-container,
+  .camera-preview {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin-bottom: 12px !important;
+  }
+
+  .webcam-container video {
+    width: 100% !important;
+    height: auto !important;
+    border-radius: 8px !important;
+  }
+
+  /* Captured photo display */
+  .captured-photo {
+    margin-bottom: 12px !important;
+  }
+
+  .captured-photo img {
+    max-width: 100% !important;
+    height: auto !important;
+    border-radius: 8px !important;
+    display: block !important;
+    margin: 0 auto !important;
+  }
+
+  /* Search input on mobile */
+  .form-inputs .search-input {
+    width: 100% !important;
+  }
+
+  /* Student list table - scrollable on mobile */
+  .student-table {
+    padding: 12px !important;
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
+
+  .student-table table {
+    min-width: 100% !important;
+    font-size: 0.85rem !important;
+  }
+
+  .student-table th,
+  .student-table td {
+    padding: 8px 6px !important;
+    white-space: nowrap !important;
+  }
+
+  /* Student card list on mobile */
+  .student-card-list {
+    gap: 12px !important;
+    margin-top: 8px !important;
+  }
+
+  .student-card {
+    padding: 12px 12px !important;
+    gap: 10px !important;
+  }
+
+  .student-card-photo {
+    width: 56px !important;
+    height: 56px !important;
+  }
+
+  .student-avatar {
+    width: 56px !important;
+    height: 56px !important;
+  }
+
+  .student-card-info {
+    flex: 1 !important;
+  }
+
+  .student-card-name {
+    font-size: 1rem !important;
+  }
+
+  .student-card-meta {
+    gap: 8px !important;
+    font-size: 0.85rem !important;
+  }
+
+  /* Actions buttons in cards */
+  .student-card-actions {
+    width: 100% !important;
+    flex-direction: row !important;
+    margin-left: 0 !important;
+    gap: 6px !important;
+  }
+
+  .student-card-actions button {
+    flex: 1 !important;
+    padding: 6px 8px !important;
+    font-size: 0.75rem !important;
+  }
+
+  /* Edit/Delete buttons in action cells */
+  .actions button {
+    padding: 6px 8px !important;
+    font-size: 0.75rem !important;
+    margin-right: 4px !important;
+    margin-bottom: 4px !important;
+  }
+
+  /* Status badge */
+  .status {
+    padding: 4px 8px !important;
+    font-size: 0.75rem !important;
+  }
+
+  /* Section headers */
+  .student-list-title {
+    font-size: 1.2rem !important;
+  }
+
+  .student-list-count {
+    font-size: 0.95rem !important;
+  }
+
+  /* No students message */
+  .no-students {
+    font-size: 1rem !important;
+    margin: 24px 0 !important;
+  }
+
+  /* Modal on mobile */
+  .group-modal {
+    padding: 12px !important;
+  }
+
+  /* Ensure form labels are visible */
+  label {
+    font-size: 0.95rem !important;
+    font-weight: 600 !important;
+    margin-bottom: 6px !important;
+  }
+
+  /* Input focus - 16px font prevents iOS zoom */
+  input:focus,
+  select:focus,
+  textarea:focus {
+    font-size: 16px !important;
+  }
+}

@@ -54,6 +54,18 @@
 	position: relative;
 	z-index: 2;
 	padding: 40px 20px;
+	overflow-y: auto;
+	overflow-x: hidden;
+}
+
+/* Hide scrollbar on login-right but keep scrolling */
+.login-right::-webkit-scrollbar {
+	display: none;
+}
+
+.login-right {
+	-ms-overflow-style: none;
+	scrollbar-width: none;
 }
 
 .login-form {
@@ -69,8 +81,20 @@
 	position: relative;
 	backdrop-filter: blur(10px);
 	transition: all 0.3s ease;
-	max-height: 90vh;
-	overflow-y: auto;
+	display: flex;
+	flex-direction: column;
+	gap: 0;
+	overflow: hidden;
+}
+
+/* Hide scrollbar but keep scrolling capability */
+.login-form::-webkit-scrollbar {
+	display: none;
+}
+
+.login-form {
+	-ms-overflow-style: none;
+	scrollbar-width: none;
 }
 
 
@@ -308,6 +332,8 @@
 @media (max-width: 768px) {
 	.login-page {
 		flex-direction: column;
+		height: auto;
+		min-height: 100vh;
 	}
 
 	.login-left {
@@ -316,26 +342,142 @@
 
 	.login-right {
 		flex: 1;
-		padding: 20px;
+		padding: 16px 12px;
 		width: 100%;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		min-height: 100vh;
 	}
 
 	.login-form {
 		max-width: 100%;
-		padding: 30px 20px;
+		padding: 20px 16px;
+		max-height: none;
+		overflow: hidden;
+		border-radius: 16px;
+		gap: 0;
+	}
+
+	.form-header {
+		margin-bottom: 20px;
+		padding-bottom: 16px;
 	}
 
 	.form-logo {
-		width: 80px;
-		height: 80px;
+		width: 70px;
+		height: 70px;
+		margin-bottom: 12px;
 	}
 
 	.form-title {
-		font-size: 1.4em;
+		font-size: 1.2em;
+		margin: 0 0 6px 0;
 	}
 
 	.form-subtitle {
+		font-size: 0.8em;
+	}
+
+	.form-group {
+		margin-bottom: 16px;
+	}
+
+	.login-form input[type="text"],
+	.login-form input[type="password"] {
+		padding: 14px 16px;
+		font-size: 1em;
+	}
+
+	.remember-me {
+		margin-bottom: 16px;
 		font-size: 0.9em;
+	}
+
+	.login-button {
+		padding: 14px 16px;
+		font-size: 1em;
+	}
+
+	.error-message {
+		padding: 10px 12px;
+		margin: 12px 0;
+		font-size: 0.85em;
+	}
+
+	.login-links {
+		margin-top: 16px;
+		font-size: 0.9em;
+	}
+}
+
+/* Extra Small Screens (Mobile Phones) */
+@media (max-width: 480px) {
+	.login-right {
+		padding: 12px 8px;
+	}
+
+	.login-form {
+		padding: 16px 12px;
+		border-radius: 12px;
+	}
+
+	.form-header {
+		margin-bottom: 16px;
+		padding-bottom: 12px;
+	}
+
+	.form-logo {
+		width: 60px;
+		height: 60px;
+		margin-bottom: 10px;
+	}
+
+	.form-title {
+		font-size: 1.1em;
+	}
+
+	.form-subtitle {
+		font-size: 0.75em;
+	}
+
+	.form-group {
+		margin-bottom: 14px;
+	}
+
+	.login-form input[type="text"],
+	.login-form input[type="password"] {
+		padding: 12px 14px;
+		font-size: 0.95em;
+		border-radius: 8px;
+	}
+
+	.remember-me {
+		margin-bottom: 14px;
+		font-size: 0.85em;
+	}
+
+	.remember-me input[type="checkbox"] {
+		width: 16px;
+		height: 16px;
+	}
+
+	.login-button {
+		padding: 12px 14px;
+		font-size: 0.95em;
+		border-radius: 8px;
+	}
+
+	.error-message {
+		padding: 8px 10px;
+		margin: 10px 0;
+		font-size: 0.8em;
+		border-radius: 6px;
+	}
+
+	.login-links {
+		margin-top: 12px;
+		font-size: 0.85em;
 	}
 }
 	

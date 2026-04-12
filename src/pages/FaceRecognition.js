@@ -339,11 +339,39 @@ function FaceRecognition() {
   };
 
   return (
-    <div style={{ minHeight: '100vh', background: 'linear-gradient(135deg, #e3f0ff 0%, #f8fafc 100%)', fontFamily: 'Segoe UI, Arial, sans-serif', padding: '40px 0' }}>
+    <div style={{ minHeight: '100vh', background: 'linear-gradient(135deg, #e3f0ff 0%, #f8fafc 100%)', fontFamily: 'Segoe UI, Arial, sans-serif', paddingBottom: '40px' }}>
+      {/* Header with Back Button */}
+      <div style={{ background: 'linear-gradient(90deg, #1976d2 80%, #0d47a1 100%)', color: '#fff', padding: '16px 24px', boxShadow: '0 2px 8px rgba(25, 118, 210, 0.12)', marginBottom: '32px', display: 'flex', alignItems: 'center', gap: '16px' }}>
+        <button 
+          onClick={() => navigate(-1)}
+          style={{ 
+            background: '#2196F3',
+            color: '#fff',
+            border: 'none',
+            padding: '8px 16px',
+            borderRadius: '6px',
+            fontSize: '1rem',
+            cursor: 'pointer',
+            fontWeight: '600',
+            boxShadow: '0 2px 8px rgba(33,150,243,0.08)',
+            transition: 'background 0.2s',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px',
+            minHeight: '36px'
+          }}
+          onMouseEnter={(e) => e.target.style.background = '#1769aa'}
+          onMouseLeave={(e) => e.target.style.background = '#2196F3'}
+        >
+          <span style={{ fontSize: '1.2em' }}>←</span> Back
+        </button>
+        <h1 style={{ margin: 0, fontSize: '1.8rem', fontWeight: '700', letterSpacing: '0.5px' }}>🤳 Facial Recognition</h1>
+      </div>
+
       <div style={{ maxWidth: 480, margin: '0 auto', background: '#fff', borderRadius: 18, boxShadow: '0 4px 32px rgba(33,150,243,0.10)', padding: '32px 32px 24px 32px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 24 }}>
-          <span style={{ fontSize: 36, color: '#1976d2' }}>🤳</span>
-          <span style={{ fontWeight: 700, fontSize: 26, color: '#1976d2', letterSpacing: 1 }}>Facial Recognition</span>
+          <span style={{ fontSize: 36, color: '#1976d2' }}>📸</span>
+          <span style={{ fontWeight: 700, fontSize: 26, color: '#1976d2', letterSpacing: 1 }}>Scan Face</span>
         </div>
         <div style={{ display: 'flex', gap: 18, marginBottom: 18, width: '100%' }}>
           <div style={{ flex: 1 }}>

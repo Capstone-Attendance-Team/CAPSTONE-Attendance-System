@@ -221,8 +221,8 @@ function TodayAttendanceList() {
   }, []);
 
   return (
-    <div style={{ padding: 24 }}>
-      <h2 style={{ fontWeight: 700, fontSize: 24, color: '#010662', marginBottom: 16 }}>
+    <div className="teacher-todayattendance-container" style={{ padding: '24px', maxWidth: '1000px', margin: '0 auto', width: '100%', boxSizing: 'border-box' }}>
+      <h2 style={{ fontWeight: 700, fontSize: 24, color: '#010662', marginBottom: 16, textAlign: 'center' }}>
         📋 Today's Attendance
       </h2>
 
@@ -252,78 +252,75 @@ function TodayAttendanceList() {
       )}
 
       {!loading && (
-        <table style={{ 
-            width: '100%', 
-            borderCollapse: 'collapse', 
-            marginTop: 20,
-            boxShadow: '0 2px 8px rgba(1,6,98,0.08)',
-            borderRadius: 8,
-            overflow: 'hidden'
-          }}>
-          <thead>
-            <tr style={{ background: '#010662', color: '#fff' }}>
-              <th style={{ padding: 12, textAlign: 'left', fontWeight: 600 }}>Student Name</th>
-              <th style={{ padding: 12, textAlign: 'left', fontWeight: 600 }}>Student ID</th>
-              <th style={{ padding: 12, textAlign: 'left', fontWeight: 600 }}>Status</th>
-              <th style={{ padding: 12, textAlign: 'left', fontWeight: 600 }}>Time</th>
-            </tr>
-          </thead>
-
-          <tbody>
-            {attendance.length === 0 ? (
-              <tr>
-                <td colSpan="4" style={{ 
-                  textAlign: 'center', 
-                  padding: 40, 
-                  color: '#888',
-                  fontSize: 15
-                }}>
-                  No attendance recorded today
-                </td>
+        <div className="teacher-todayattendance-table-wrapper" style={{ overflowX: 'auto', borderRadius: 8, boxShadow: '0 2px 8px rgba(1,6,98,0.08)' }}>
+          <table className="teacher-todayattendance-table" style={{ 
+              width: '100%', 
+              borderCollapse: 'collapse', 
+              marginTop: 20
+            }}>
+            <thead>
+              <tr style={{ background: '#010662', color: '#fff' }}>
+                <th style={{ padding: 12, textAlign: 'left', fontWeight: 600 }}>Student Name</th>
+                <th style={{ padding: 12, textAlign: 'left', fontWeight: 600 }}>Student ID</th>
+                <th style={{ padding: 12, textAlign: 'left', fontWeight: 600 }}>Status</th>
+                <th style={{ padding: 12, textAlign: 'left', fontWeight: 600 }}>Time</th>
               </tr>
-            ) : (
-              attendance.map((a, index) => (
-                <tr 
-                  key={a._id || `${a.studentId}-${a.time}-${index}`} 
-                  style={{ 
-                    borderBottom: '1px solid #eee',
-                    background: index % 2 === 0 ? '#fafbfc' : '#fff',
-                    transition: 'background 0.2s'
-                  }}
-                  onMouseEnter={(e) => e.currentTarget.style.background = '#f0f4ff'}
-                  onMouseLeave={(e) => e.currentTarget.style.background = index % 2 === 0 ? '#fafbfc' : '#fff'}
-                >
-                  <td style={{ padding: 12, color: '#222', fontWeight: 500 }}>
-                    {a.studentName || 'Unknown'}
-                  </td>
-                  <td style={{ padding: 12, color: '#555' }}>
-                    {a.studentId || 'N/A'}
-                  </td>
-                  <td style={{ padding: 12 }}>
-                    <span style={{
-                      background: a.status === 'Present' ? '#e6fffa' : 
-                                 
-                                 a.status === 'Absent' ? '#ffeaea' : '#f0f0f0',
-                      color: a.status === 'Present' ? '#38b2ac' : 
-                             
-                             a.status === 'Absent' ? '#ff4757' : '#888',
-                      padding: '6px 12px',
-                      borderRadius: 6,
-                      fontWeight: 600,
-                      fontSize: 13,
-                      display: 'inline-block'
-                    }}>
-                      {a.status || 'Unknown'}
-                    </span>
-                  </td>
-                  <td style={{ padding: 12, color: '#555', fontSize: 14 }}>
-                    {a.time ? new Date(a.time).toLocaleTimeString() : 'N/A'}
+            </thead>
+
+            <tbody>
+              {attendance.length === 0 ? (
+                <tr>
+                  <td colSpan="4" style={{ 
+                    textAlign: 'center', 
+                    padding: 40, 
+                    color: '#888',
+                    fontSize: 15
+                  }}>
+                    No attendance recorded today
                   </td>
                 </tr>
-              ))
-            )}
-          </tbody>
-        </table>
+              ) : (
+                attendance.map((a, index) => (
+                  <tr 
+                    key={a._id || `${a.studentId}-${a.arrivalTime}-${index}`} 
+                    style={{ 
+                      borderBottom: '1px solid #eee',
+                      background: index % 2 === 0 ? '#fafbfc' : '#fff',
+                      transition: 'background 0.2s'
+                    }}
+                    onMouseEnter={(e) => e.currentTarget.style.background = '#f0f4ff'}
+                    onMouseLeave={(e) => e.currentTarget.style.background = index % 2 === 0 ? '#fafbfc' : '#fff'}
+                  >
+                    <td style={{ padding: 12, color: '#222', fontWeight: 500 }}>
+                      {a.name || a.studentName || 'Unknown'}
+                    </td>
+                    <td style={{ padding: 12, color: '#555' }}>
+                      {a.studentId || 'N/A'}
+                    </td>
+                    <td style={{ padding: 12 }}>
+                      <span style={{
+                        background: a.status && a.status.toLowerCase() === 'present' ? '#e6fffa' : 
+                                   a.status && a.status.toLowerCase() === 'absent' ? '#ffeaea' : '#f0f0f0',
+                        color: a.status && a.status.toLowerCase() === 'present' ? '#38b2ac' : 
+                               a.status && a.status.toLowerCase() === 'absent' ? '#ff4757' : '#888',
+                        padding: '6px 12px',
+                        borderRadius: 6,
+                        fontWeight: 600,
+                        fontSize: 13,
+                        display: 'inline-block'
+                      }}>
+                        {(a.status ? a.status.charAt(0).toUpperCase() + a.status.slice(1) : 'Unknown')}
+                      </span>
+                    </td>
+                    <td style={{ padding: 12, color: '#555', fontSize: 14 }}>
+                      {a.arrivalTime || 'N/A'}
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
       )}
 
       {!loading && attendance.length > 0 && (
@@ -331,7 +328,7 @@ function TodayAttendanceList() {
           marginTop: 16, 
           color: '#666', 
           fontSize: 13,
-          textAlign: 'right'
+          textAlign: 'center'
         }}>
           Total: {attendance.length} record{attendance.length !== 1 ? 's' : ''}
         </div>
@@ -825,32 +822,6 @@ useEffect(() => {
 
 		return (
 			<div className="teacher-dashboard-container admin-dashboard-container">
-				   {/* Hamburger button */}
-				   {!sidebarOpen && (
-				   <button
-					   style={{
-						   position: 'fixed',
-						   top: 24,
-						   left: 24,
-						   zIndex: 10001,
-						   background: 'transparent',
-						   color: '#fff',
-						   border: 'none',
-						   borderRadius: 8,
-						   width: 48,
-						   height: 48,
-						   display: 'flex',
-						   alignItems: 'center',
-						   justifyContent: 'center',
-						   cursor: 'pointer',
-						   fontSize: 28
-					   }}
-					   onClick={() => setSidebarOpen(true)}
-					   aria-label="Open sidebar"
-				   >
-					   <FontAwesomeIcon icon={faBars} style={{color: '#fff', fontSize: '20px'}} />
-				   </button>
-				   )}
 
 				   {/* Sidebar drawer */}
 				   <aside
@@ -866,11 +837,28 @@ useEffect(() => {
 						   zIndex: 10000,
 						   boxShadow: sidebarOpen ? '2px 0 16px rgba(1,6,98,0.10)' : 'none',
 						   transition: 'left 0.3s',
-						   paddingTop: 0
+						   paddingTop: 0,
+						   overflowY: 'auto',
+						   overflowX: 'hidden'
 					   }}
 				   >
 					   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '18px 18px 0 18px' }}>
-						   
+						   {/* Logo and SPCC Title */}
+						   <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+							   <img
+								   src="/images/spcc-logo.png"
+								   alt="SPCC Logo"
+								   style={{ 
+									   height: '40px',
+									   width: 'auto',
+									   objectFit: 'contain',
+									   filter: 'brightness(1.1)',
+									   background: 'transparent',
+									   padding: '0'
+								   }}
+							   />
+							   <span style={{ fontSize: '13px', fontWeight: '700', color: '#f8bb08', letterSpacing: '0.5px' }}>SPCC</span>
+						   </div>
 						   <button
 							   style={{ background: 'none', border: 'none', color: '#fff', fontSize: 28, cursor: 'pointer', marginLeft: 8 }}
 							   onClick={() => setSidebarOpen(false)}
@@ -969,33 +957,57 @@ useEffect(() => {
 						   onClick={() => setSidebarOpen(false)}
 					   />
 				   )}
-				<div className="admin-main-content" style={{ transition: 'margin-left 0.3s' }}>
-					   <header className="admin-header" style={{ background: 'linear-gradient(90deg, #010162 0%, #1a1a8a 100%)', color: '#fff', borderBottom: '2px solid #010162', boxShadow: '0 2px 8px rgba(1,1,98,0.15)', padding: 0, position: 'sticky', top: 0, zIndex: 100 }}>
-            <div className="admin-header-row" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '25px 24px', paddingLeft: '80px', gap: '20px', width: '100%', boxSizing: 'border-box' }}>
-              {/* Logo and School Name */}
-              <div style={{ display: 'flex', alignItems: 'center', gap: '12px', cursor: 'pointer' }} onClick={() => setActiveSection('overview')}>
-                <img
-                  src="/images/spcc-logo.png"
-                  alt="SPCC Logo"
-                  className="navbar-logo"
-                  style={{ 
-                    height: '45px',
-                    width: 'auto',
-                    objectFit: 'contain',
-                    filter: 'brightness(1.1)',
+				<div className="admin-main-content" style={{ transition: 'margin-left 0.3s', paddingTop: 0 }}>
+        {/* Fixed Navbar */}
+					   <header className="admin-header" style={{ background: 'linear-gradient(90deg, #010162 0%, #1a1a8a 100%)', color: '#fff', borderBottom: '2px solid #010162', boxShadow: '0 2px 8px rgba(1,1,98,0.15)', padding: 0, position: 'fixed', top: 0, left: 0, right: 0, zIndex: 100 }}>
+            <div className="admin-header-row" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '25px 24px', gap: '20px', width: '100%', boxSizing: 'border-box' }}>
+              {/* Hamburger Button + Logo and School Name */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px', minWidth: 0 }}>
+                {/* Hamburger Button */}
+                <button
+                  style={{
                     background: 'transparent',
-                    padding: '0',
+                    border: 'none',
+                    borderRadius: '8px',
+                    width: '44px',
+                    height: '44px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    cursor: 'pointer',
                     flexShrink: 0
                   }}
-                />
-                <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', lineHeight: '1.3', gap: '4px' }}>
-                  <span style={{ fontSize: '20px', fontWeight: '800', color: '#f8bb08', textTransform: 'uppercase', letterSpacing: '0.5px' }}>System Plus Computer College</span>
-                  <span style={{ fontSize: '14px', fontWeight: '700', color: '#fff' }}>Teacher Dashboard</span>
+                  onClick={() => setSidebarOpen(true)}
+                  aria-label="Open sidebar"
+                >
+                  <FontAwesomeIcon icon={faBars} style={{color: '#fff', fontSize: '20px'}} />
+                </button>
+                
+                {/* Logo and School Name */}
+                <div style={{ display: 'flex', alignItems: 'center', gap: '12px', cursor: 'pointer' }} onClick={() => setActiveSection('overview')}>
+                  <img
+                    src="/images/spcc-logo.png"
+                    alt="SPCC Logo"
+                    className="navbar-logo"
+                    style={{ 
+                      height: '45px',
+                      width: 'auto',
+                      objectFit: 'contain',
+                      filter: 'brightness(1.1)',
+                      background: 'transparent',
+                      padding: '0',
+                      flexShrink: 0
+                    }}
+                  />
+                  <div className="navbar-school-name" style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', lineHeight: '1.3', gap: '4px' }}>
+                    <span style={{ fontSize: '20px', fontWeight: '800', color: '#f8bb08', textTransform: 'uppercase', letterSpacing: '0.5px' }}>System Plus Computer College</span>
+                    <span className="navbar-dashboard-text" style={{ fontSize: '14px', fontWeight: '700', color: '#fff' }}>Teacher Dashboard</span>
+                  </div>
                 </div>
               </div>
 
               <div className="admin-user-info" style={{ display: 'flex', alignItems: 'center', gap: '20px', flexShrink: 0 }}>
-                <div style={{ position: 'relative', display: 'inline-block' }}>
+                <div style={{ position: 'relative', display: 'inline-block' }} className="navbar-notification-bell">
                   <NotificationIcon 
                     unreadCount={unreadCount}
                     onClick={toggleNotifications}
@@ -1019,8 +1031,10 @@ useEffect(() => {
                     </span>
                   )}
                 </div>
-                <InboxIcon onClick={() => setActiveSection('inbox')} unreadCount={unreadInboxCount} color="#fff" />
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <div className="navbar-inbox-icon">
+                  <InboxIcon onClick={() => setActiveSection('inbox')} unreadCount={unreadInboxCount} color="#fff" />
+                </div>
+                <div className="navbar-avatar" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                   <button
                     style={{
                       background: 'none',
@@ -1056,13 +1070,13 @@ useEffect(() => {
 						onDelete={deleteNotification}
 						/>
 						
-					   <div className="admin-content" style={{ background: '#f4f6fa', minHeight: '100vh' }}>
+					   <div className="admin-content" style={{ background: '#f4f6fa', minHeight: '100vh', paddingTop: 100 }}>
 						   {activeSection === 'overview' && (
-							   <div className="dashboard-overview-section redesigned-overview">
+							   <div className="teacher-overview-wrapper dashboard-overview-section redesigned-overview">
 								   <h2 style={{fontWeight:700, fontSize:28, color:'#010662', marginBottom:24, display:'flex',alignItems:'center',gap:10}}>
 									   <span role="img" aria-label="dashboard">📊</span> Teacher Dashboard
 								   </h2>
-								   <div className="dashboard-overview-cards redesigned-cards" style={{display:'grid',gridTemplateColumns:'repeat(5,1fr)',gap:'32px'}}>
+								   <div className="teacher-overview-cards dashboard-overview-cards redesigned-cards" style={{display:'grid',gridTemplateColumns:'repeat(5,1fr)',gap:'32px'}}>
 									   <div className="dashboard-card redesigned-card" style={{background:'#e3f2fd', border: '2px solid #010662'}}>
 										   <div className="dashboard-card-icon" style={{fontSize:32, color:'#010662', marginBottom:8}}>📚</div>
 										   <div className="dashboard-card-title">Assigned Subjects</div>
@@ -1091,15 +1105,17 @@ useEffect(() => {
 							</div>
 						)}
 						{activeSection === 'todayAttendance' && (
-								<TodayAttendanceList />
+								<div className="teacher-todayattendance-wrapper">
+									<TodayAttendanceList />
+								</div>
 								)}
 								{activeSection === 'inbox' && (
-								<div className="inbox-section" style={{maxWidth: '900px', width: '100%', margin: '0 auto', padding: '32px 0'}}>
+								<div className="teacher-inbox-wrapper inbox-section" style={{maxWidth: '900px', width: '100%', margin: '0 auto', padding: '32px 0'}}>
 										<h2 style={{fontWeight: 700, fontSize: 28, color: '#2d3748', display:'flex',alignItems:'center',gap:8}}>
 											<span role="img" aria-label="inbox">📥</span> Teacher Inbox
 										</h2>
 										{/* Toggle buttons for Received/Sent */}
-										<div style={{display:'flex',gap:12,marginBottom:16}}>
+										<div className="teacher-inbox-toolbar inbox-toolbar" style={{display:'flex',gap:12,marginBottom:16}}>
 											<button
 												onClick={() => setInboxView('received')}
 												style={{
@@ -1382,7 +1398,7 @@ useEffect(() => {
 									</div>
 								)}
 						{activeSection === 'announcement' && (
-							<div className="announcement-section" style={{maxWidth: 1600, margin: '0 auto', padding: '72px 96px'}}>
+							<div className="teacher-announcement-wrapper announcement-section" style={{maxWidth: 1600, margin: '0 auto', padding: '72px 96px'}}>
 								<h2 style={{display: 'flex', alignItems: 'center', gap: 8, fontWeight: 700, fontSize: 28, color: '#2b6cb0'}}>
 									<span role="img" aria-label="announcement">📢</span> Announcements
 								</h2>

@@ -143,3 +143,104 @@
 .delete-btn:hover {
 	background: #c82333;
 }
+
+/* Mobile-specific styles for ManageSubjectSection */
+@media (max-width: 767px) {
+	.manage-subject-section-container {
+		padding: 12px;
+		background: #f7fbff;
+	}
+
+	.page-header {
+		padding: 12px 16px;
+		margin-bottom: 16px;
+		font-size: 1.3rem;
+		border-radius: 10px;
+	}
+
+	.page-header .icon {
+		margin-right: 8px;
+		font-size: 1.8rem;
+	}
+
+	.subject-section-card {
+		padding: 12px 16px;
+		margin-bottom: 16px;
+		border-radius: 12px;
+	}
+
+	/* Form on mobile */
+	.subject-section-form {
+		margin-bottom: 12px;
+	}
+
+	.form-row {
+		flex-direction: column;
+		gap: 8px;
+		align-items: stretch;
+	}
+
+	.subject-section-form input {
+		padding: 10px 12px;
+		font-size: 16px;
+		width: 100%;
+		box-sizing: border-box;
+	}
+
+	.add-btn {
+		padding: 10px 16px;
+		font-size: 0.9rem;
+		width: 100%;
+		box-sizing: border-box;
+	}
+
+	.form-error {
+		font-size: 0.9rem;
+	}
+
+	/* Table on mobile */
+	.table-wrapper {
+		overflow-x: auto;
+		-webkit-overflow-scrolling: touch;
+		padding: 8px 0;
+	}
+
+	.subject-section-table {
+		font-size: 0.85rem;
+		min-width: 100%;
+		white-space: nowrap;
+	}
+
+	.subject-section-table th,
+	.subject-section-table td {
+		padding: 8px 6px;
+	}
+
+	.subject-section-table thead tr {
+		background: #f3f6fa;
+	}
+
+	/* Action buttons in table */
+	.edit-btn,
+	.delete-btn {
+		padding: 6px 10px;
+		font-size: 0.7rem;
+		margin-right: 4px;
+		margin-bottom: 4px;
+	}
+
+	/* Card header on mobile */
+	.card-header {
+		padding-bottom: 8px;
+		margin-bottom: 12px;
+	}
+
+	.card-title {
+		font-size: 1.1rem;
+	}
+
+	/* Divider on mobile */
+	.divider {
+		margin: 12px 0 8px 0;
+	}
+}

@@ -250,7 +250,7 @@ const ManageAttendance = () => {
     return (
         <div className="manage-attendance-container" style={{ backgroundColor: '#43a047' }}>
             <div className="page-header">
-                <div className="header-top" style={{ justifyContent: 'flex-start', gap: '24px' }}>
+                <div className="header-top" style={{ justifyContent: 'flex-start', gap: '12px', display: 'flex', alignItems: 'flex-start', flexWrap: 'wrap' }}>
                     <button 
                         onClick={() => navigate(-1)} 
                         className="back-button"

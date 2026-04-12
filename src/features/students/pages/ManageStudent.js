@@ -458,13 +458,13 @@ const ManageStudent = ({ refreshDashboard }) => {
       <div className="header-section redesigned-header-section">
         <h1>Manage Students</h1>
       </div>
-      <div style={{ display: 'flex', gap: 16, marginBottom: 24, alignItems: 'center' }}>
+      <div className="student-search-filter-row" style={{ display: 'flex', gap: 16, marginBottom: 24, alignItems: 'center', flexWrap: 'wrap' }}>
         <input
           type="text"
           placeholder="Search student by name or ID..."
           value={searchQuery}
           onChange={e => setSearchQuery(e.target.value)}
-          style={{ padding: '8px 12px', borderRadius: 8, border: '1px solid #e2e8f0', fontWeight: 500, minWidth: 180 }}
+          style={{ padding: '8px 12px', borderRadius: 8, border: '1px solid #e2e8f0', fontWeight: 500, minWidth: 180, flex: 1 }}
         />
         <select
           value={searchSection || ''}
@@ -506,7 +506,7 @@ const ManageStudent = ({ refreshDashboard }) => {
             value={formData.studentId}
             onChange={e => handleInputChange('studentId', e.target.value)}
           />
-          <div style={{ display: 'flex', gap: '10px', marginBottom: '12px' }}>
+          <div className="student-form-row" style={{ display: 'flex', gap: '10px', marginBottom: '12px' }}>
             
             <select
               name="section"
@@ -522,7 +522,7 @@ const ManageStudent = ({ refreshDashboard }) => {
               ))}
             </select>
             </div>
-            <div>
+            <div className="student-form-row">
             <select
               value={formData.gradeLevel}
               onChange={e => handleInputChange('gradeLevel', e.target.value)}
@@ -542,11 +542,11 @@ const ManageStudent = ({ refreshDashboard }) => {
               Student Photo *
             </label>
             {!showCamera && !capturedPhoto && (
-              <div className="camera-controls" style={{ display: 'flex', gap: '16px', marginBottom: '12px' }}>
+              <div className="photo-button-row" style={{ display: 'flex', gap: '16px', marginBottom: '12px' }}>
                 <button 
                   type="button"
                   onClick={openCamera}
-                  className="camera-button"
+                  className="camera-button take-photo-btn"
                   style={{
                     backgroundColor: '#28a745',
                     color: 'white',

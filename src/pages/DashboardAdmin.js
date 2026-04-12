@@ -562,23 +562,39 @@ setAnnouncements(res.data);
       const currentUser = JSON.parse(localStorage.getItem('currentUser'));
       if (!currentUser || !currentUser._id) throw new Error('No admin user found');
       // Fetch received and sent messages (with role=admin)
-      const [received, sent] = await Promise.all([
-        fetchInbox(currentUser._id, 'admin'),
-        fetchSentMessagesWithRole(currentUser._id, 'admin')
-      ]);
-      // Mark sent messages with fromSelf: true for UI
-      const sentMarked = sent.map(msg => ({ ...msg, fromSelf: true }));
-      // Merge local sent messages from localStorage
-      let localSent = [];
       try {
-        const local = localStorage.getItem('adminSentMessages');
-        localSent = local ? JSON.parse(local) : [];
-      } catch {}
-      // Avoid duplicates by _id
-      const all = [...localSent, ...received, ...sentMarked].filter((msg, idx, arr) =>
-        arr.findIndex(m => m._id === msg._id) === idx
-      ).sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-      setAdminInbox(all);
+        const [received, sent] = await Promise.all([
+          fetchInbox(currentUser._id, 'admin'),
+          fetchSentMessagesWithRole(currentUser._id, 'admin')
+        ]);
+        // Mark sent messages with fromSelf: true for UI
+        const sentMarked = sent.map(msg => ({ ...msg, fromSelf: true }));
+        // Merge local sent messages from localStorage
+        let localSent = [];
+        try {
+          const local = localStorage.getItem('adminSentMessages');
+          localSent = local ? JSON.parse(local) : [];
+        } catch {}
+        // Avoid duplicates by _id
+        const all = [...localSent, ...received, ...sentMarked].filter((msg, idx, arr) =>
+          arr.findIndex(m => m._id === msg._id) === idx
+        ).sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+        setAdminInbox(all);
+      } catch (apiErr) {
+        // If API fails, just use local sent messages (inbox feature not yet available on backend)
+        let localSent = [];
+        try {
+          const local = localStorage.getItem('adminSentMessages');
+          localSent = local ? JSON.parse(local) : [];
+        } catch {}
+        setAdminInbox(localSent);
+        // Set a flag but not an error - feature is just not available yet
+        if (apiErr.message && apiErr.message.includes('Failed to fetch inbox')) {
+          setAdminInboxError(null); // Don't show error, just fallback gracefully
+        } else {
+          setAdminInboxError(apiErr.message);
+        }
+      }
     } catch (err) {
       setAdminInboxError(err.message);
       setAdminInbox([]);
@@ -669,7 +685,22 @@ setAnnouncements(res.data);
           }}
         >
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '18px 18px 0 18px' }}>
-            
+            {/* Logo and SPCC Title */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+              <img
+                src="/images/spcc-logo.png"
+                alt="SPCC Logo"
+                style={{ 
+                  height: '40px',
+                  width: 'auto',
+                  objectFit: 'contain',
+                  filter: 'brightness(1.1)',
+                  background: 'transparent',
+                  padding: '0'
+                }}
+              />
+              <span style={{ fontSize: '13px', fontWeight: '700', color: '#f8bb08', letterSpacing: '0.5px' }}>SPCC</span>
+            </div>
             <button
               style={{ background: 'none', border: 'none', color: '#fff', fontSize: 28, cursor: 'pointer', marginLeft: 8 }}
               onClick={() => setSidebarOpen(false)}
@@ -799,14 +830,15 @@ setAnnouncements(res.data);
 
         {/* Main Content */}
         <div className="admin-main-content" style={{ transition: 'margin-left 0.3s' }}>
+        {/* Sticky Navbar */}
           <header className="admin-header" style={{ background: 'linear-gradient(90deg, #010162 0%, #1a1a8a 100%)', color: '#fff', borderBottom: '2px solid #010162', boxShadow: '0 2px 8px rgba(1,1,98,0.15)', padding: 0, position: 'sticky', top: 0, zIndex: 100 }}>
             <div className="admin-header-row" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '25px 24px', gap: '20px', width: '100%', boxSizing: 'border-box' }}>
               {/* Hamburger Button + Logo and School Name */}
-              <div style={{ display: 'flex', alignItems: 'center', gap: '16px', minWidth: 0 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px', minWidth: 0 }}>
+                {/* Hamburger Button */}
                 <button
                   style={{
                     background: 'transparent',
-                    color: '#fff',
                     border: 'none',
                     borderRadius: '8px',
                     width: '44px',
@@ -815,7 +847,6 @@ setAnnouncements(res.data);
                     alignItems: 'center',
                     justifyContent: 'center',
                     cursor: 'pointer',
-                    fontSize: '24px',
                     flexShrink: 0
                   }}
                   onClick={() => setSidebarOpen(true)}
@@ -825,7 +856,7 @@ setAnnouncements(res.data);
                 </button>
                 
                 {/* Logo and School Name */}
-                <div style={{ display: 'flex', alignItems: 'center', gap: '12px', cursor: 'pointer' }} onClick={() => setActiveSection('dashboard')}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '12px', cursor: 'pointer' }} onClick={() => setActiveSection('overview')}>
                   <img
                     src="/images/spcc-logo.png"
                     alt="SPCC Logo"
@@ -840,15 +871,15 @@ setAnnouncements(res.data);
                       flexShrink: 0
                     }}
                   />
-                  <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', lineHeight: '1.3', gap: '4px' }}>
+                  <div className="navbar-school-name" style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', lineHeight: '1.3', gap: '4px' }}>
                     <span style={{ fontSize: '20px', fontWeight: '800', color: '#f8bb08', textTransform: 'uppercase', letterSpacing: '0.5px' }}>System Plus Computer College</span>
-                    <span style={{ fontSize: '14px', fontWeight: '700', color: '#fff' }}>Admin Dashboard</span>
+                    <span className="navbar-dashboard-text" style={{ fontSize: '14px', fontWeight: '700', color: '#fff' }}>Admin Dashboard</span>
                   </div>
                 </div>
               </div>
 
               <div className="admin-user-info" style={{ display: 'flex', alignItems: 'center', gap: '20px', flexShrink: 0 }}>
-                <div style={{ position: 'relative', display: 'inline-block' }}>
+                <div style={{ position: 'relative', display: 'inline-block' }} className="navbar-notification-bell">
                   <NotificationIcon 
                     unreadCount={notifications.unreadCount}
                     onClick={notifications.toggleNotifications}
@@ -872,8 +903,10 @@ setAnnouncements(res.data);
                     </span>
                   )}
                 </div>
-                <InboxIcon onClick={() => setActiveSection('inbox')} color="#fff" />
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <div className="navbar-inbox-icon">
+                  <InboxIcon onClick={() => setActiveSection('inbox')} color="#fff" />
+                </div>
+                <div className="navbar-avatar" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                   <button
                     style={{
                       background: 'none',
@@ -917,7 +950,7 @@ setAnnouncements(res.data);
                   Admin Inbox
                 </h2>
                 {/* Toggle buttons for Received/Sent */}
-                <div style={{display:'flex',gap:12,marginBottom:16}}>
+                <div className="inbox-toolbar" style={{display:'flex',gap:12,marginBottom:16,flexWrap:'wrap',alignItems:'center'}}>
                   <button
                     onClick={() => setInboxView('received')}
                     style={{
@@ -927,7 +960,8 @@ setAnnouncements(res.data);
                       border:'none',
                       borderRadius:6,
                       fontWeight:600,
-                      cursor:'pointer'
+                      cursor:'pointer',
+                      flex: '0 1 auto'
                     }}
                   >
                     Received
@@ -941,13 +975,14 @@ setAnnouncements(res.data);
                       border:'none',
                       borderRadius:6,
                       fontWeight:600,
-                      cursor:'pointer'
+                      cursor:'pointer',
+                      flex: '0 1 auto'
                     }}
                   >
                     Sent
                   </button>
-                  <div style={{flex:1}} />
-                  <button onClick={()=>setShowSendMessage(v=>!v)} className="dashboard-btn primary">
+                  <div style={{flex:1,minWidth:0}} />
+                  <button onClick={()=>setShowSendMessage(v=>!v)} className="dashboard-btn primary" style={{flex:'0 1 auto',whiteSpace:'nowrap'}}>
                     {showSendMessage ? 'Close' : '+ New Message'}
                   </button>
                   <button
@@ -960,13 +995,16 @@ setAnnouncements(res.data);
                       borderRadius: '50%',
                       width: 40,
                       height: 40,
+                      minHeight: 40,
+                      minWidth: 40,
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
                       cursor: 'pointer',
                       color: '#3182ce',
                       fontSize: 26,
-                      boxShadow: '0 1px 4px rgba(49,130,206,0.08)'
+                      boxShadow: '0 1px 4px rgba(49,130,206,0.08)',
+                      flex: '0 0 auto'
                     }}
                   >
                     <FontAwesomeIcon icon={faRefresh} style={{fontSize: '20px'}} />
@@ -1082,7 +1120,13 @@ setAnnouncements(res.data);
                   {adminInboxLoading ? (
                     <div style={{textAlign:'center',color:'#888'}}>Loading...</div>
                   ) : adminInboxError ? (
-                    <div style={{textAlign:'center',color:'#e53e3e'}}>Error: {adminInboxError}</div>
+                    <div style={{textAlign:'center',color:'#856404',background:'#fff3cd',padding:'24px',borderRadius:'8px',border:'1px solid #ffeaa7'}}>
+                      <div style={{fontWeight:600,marginBottom:8,display:'flex',alignItems:'center',justifyContent:'center',gap:8}}>
+                        <FontAwesomeIcon icon={faInbox} style={{fontSize:20}} />
+                        Inbox Feature
+                      </div>
+                      <div style={{fontSize:'14px'}}>The messaging feature is currently being configured. You can still send announcements and messages using the form above.</div>
+                    </div>
                   ) : adminInbox.length === 0 ? (
                     <div style={{textAlign:'center',color:'#888'}}>No messages in your inbox.</div>
                   ) : (
@@ -1313,9 +1357,9 @@ setAnnouncements(res.data);
           )}
           {/* Reports Section */}
           {activeSection === 'reports' && (
-            <div className="dashboard-reports-section">
+            <div className="dashboard-reports-section reports-wrapper">
               <h2>Reports</h2>
-              <div style={{marginBottom: 18, display: 'flex', alignItems: 'center', gap: 16}}>
+              <div className="reports-filter-row" style={{marginBottom: 18, display: 'flex', alignItems: 'center', gap: 16}}>
                 <label htmlFor="report-month" style={{fontWeight: 600}}>Select Month:</label>
                 <input
                   id="report-month"
@@ -1327,7 +1371,7 @@ setAnnouncements(res.data);
                 />
               </div>
               <button
-                className="dashboard-btn primary"
+                className="dashboard-btn primary export-btn"
                 style={{marginBottom: 12}}
                 onClick={() => {
                   console.log('Section Attendance Data:', sectionAttendance);
@@ -1348,7 +1392,7 @@ setAnnouncements(res.data);
                   XLSX.writeFile(wb, `section-attendance-${reportMonth || 'month'}.xlsx`);
                 }}
               >Export to Excel</button>
-              <div className="reports-panel">
+              <div className="reports-table-panel">
                 <table className="dashboard-table">
                   <thead>
                     <tr>
@@ -1379,11 +1423,11 @@ setAnnouncements(res.data);
           {/* User Management Section */}
           {activeSection === 'users' && (
             <div className="dashboard-users-section redesigned-users-section">
-              <div className="dashboard-section-header">
+              <div className="dashboard-section-header users-section-header">
                 <h2>System Users</h2>
-                <div>
+                <div className="users-header-buttons">
                   <button className="dashboard-btn primary" onClick={() => handleOpenAddUser('teacher')}>+ Add Teacher</button>
-                  <button className="dashboard-btn primary" style={{ marginLeft: '8px' }} onClick={() => handleOpenAddUser('parent')}>+ Add Parent</button>
+                  <button className="dashboard-btn primary" onClick={() => handleOpenAddUser('parent')}>+ Add Parent</button>
                 </div>
               </div>
               {/* Add User Modal */}
@@ -1658,7 +1702,7 @@ setAnnouncements(res.data);
                 </div>
               )}
               {/* User Search Bar */}
-              <div className="dashboard-user-search-row">
+              <div className="dashboard-user-search-row users-search-row">
                 <input
                   type="text"
                   className="dashboard-user-search-input"
@@ -1666,17 +1710,18 @@ setAnnouncements(res.data);
                   value={userSearch}
                   onChange={e => setUserSearch(e.target.value)}
                 />
-                <button
-                  className="dashboard-btn"
-                  type="button"
-                  onClick={() => setUserSearch(userSearch.trim())}
-                >Search</button>
-                <button
-                  className="dashboard-btn"
-                  type="button"
-                  onClick={() => setUserSearch("")}
-                  style={{ background: '#eee', color: '#333' }}
-                >Clear</button>
+                <div className="users-search-buttons">
+                  <button
+                    className="dashboard-btn"
+                    type="button"
+                    onClick={() => setUserSearch(userSearch.trim())}
+                  >Search</button>
+                  <button
+                    className="dashboard-btn clear-btn"
+                    type="button"
+                    onClick={() => setUserSearch("")}
+                  >Clear</button>
+                </div>
               </div>
               <div className="dashboard-user-list redesigned-user-list">
                 {userList.filter(u => u.type === 'teacher' || u.type === 'parent')
@@ -1821,14 +1866,14 @@ setAnnouncements(res.data);
           )}
           {/* Announcements Section */}
           {activeSection === 'announcements' && (
-            <div className="dashboard-announcements-section" style={{maxWidth: 900, margin: '0 auto'}}>
-              <div style={{display:'flex',alignItems:'center',gap:12,marginBottom:8}}>
+            <div className="dashboard-announcements-section announcements-wrapper">
+              <div className="announcements-header" style={{display:'flex',alignItems:'center',gap:12,marginBottom:8}}>
                 <FontAwesomeIcon icon={faComments} style={{fontSize: '32px', color: '#2196F3'}} />
                 <h2 style={{fontWeight:700, fontSize:28, color:'#2196F3', margin:0}}>Announcements</h2>
               </div>
               <div className="announcement-form-card" style={{background:'#f8fafc',borderRadius:16,boxShadow:'0 2px 16px rgba(33,150,243,0.08)',padding:'32px 28px',marginBottom:32}}>
                 <form className="announcement-form" onSubmit={handleSendAdminMessage} style={{display:'flex',flexDirection:'column',gap:20}}>
-                  <div style={{display:'flex',gap:18,alignItems:'center',flexWrap:'wrap'}}>
+                  <div className="announcement-form-row" style={{display:'flex',gap:18,alignItems:'center',flexWrap:'wrap'}}>
                     <select value={adminMessageRecipient} onChange={e=>setAdminMessageRecipient(e.target.value)} style={{padding:'12px 18px',borderRadius:10,border:'1.5px solid #b6d0f7',fontWeight:600,minWidth:200,background:'#fff'}} required>
                       <option value="">Select Audience</option>
                       <option value="teachers">All Teachers</option>
@@ -1838,7 +1883,7 @@ setAnnouncements(res.data);
                     <input type="text" placeholder="Announcement Title" style={{flex:1,padding:'12px 18px',borderRadius:10,border:'1.5px solid #b6d0f7',fontWeight:500,background:'#fff'}} value={adminMessageTitle || ''} onChange={e=>setAdminMessageTitle(e.target.value)} required />
                   </div>
                   <textarea placeholder="Write your announcement here..." style={{padding:'14px 18px',borderRadius:10,border:'1.5px solid #b6d0f7',fontWeight:500,minHeight:90,background:'#fff'}} value={adminMessageContent} onChange={e=>setAdminMessageContent(e.target.value)} required />
-                  <div style={{display:'flex',justifyContent:'flex-end',gap:16,alignItems:'center'}}>
+                  <div className="announcement-form-actions" style={{display:'flex',justifyContent:'flex-end',gap:16,alignItems:'center',flexWrap:'wrap'}}>
                     {adminMessageError && <span style={{color:'#ff4757',fontWeight:500}}>{adminMessageError}</span>}
                     {adminMessageSuccess && <span style={{color:'#38b2ac',fontWeight:500}}>{adminMessageSuccess}</span>}
                     <button type="submit" className="dashboard-btn primary" disabled={adminMessageSending} style={{padding:'12px 40px',fontWeight:700,fontSize:18,background:'#2196F3',color:'#fff',borderRadius:10,boxShadow:'0 2px 8px rgba(33,150,243,0.10)'}}>

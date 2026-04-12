@@ -108,6 +108,22 @@ app.get('/api/attendance', async (req, res) => {
   }
 });
 
+// Get today's attendance (must be before :section/:date route)
+app.get('/api/attendance/today', async (req, res) => {
+  try {
+    const today = new Date().toISOString().split('T')[0];
+    const allRecords = req.query.all === 'true';
+    
+    const attendance = await Attendance.find({
+      date: today
+    }).populate('recordedBy', 'username email type');
+    
+    res.json(allRecords ? attendance : attendance);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 // Get attendance by date and section
 app.get('/api/attendance/:section/:date', async (req, res) => {
   try {

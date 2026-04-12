@@ -379,22 +379,59 @@
 	padding: 32px 24px;
 	margin-top: 32px;
 }
+
+.reports-wrapper {
+	max-width: 900px;
+	margin: 0 auto;
+	padding: 0;
+	width: 100%;
+	box-sizing: border-box;
+	overflow: visible;
+}
+
 .reports-tabs {
 	display: flex;
 	gap: 12px;
 	margin-bottom: 18px;
 }
+
+.reports-filter-row {
+	display: flex;
+	gap: 16px;
+	align-items: center;
+	margin-bottom: 18px;
+}
+
+.reports-filter-row label {
+	font-weight: 600;
+	white-space: nowrap;
+}
+
+.reports-filter-row input {
+	padding: 8px 12px;
+	border-radius: 6px;
+	border: 1px solid #b6d0f7;
+	font-weight: 500;
+	box-sizing: border-box;
+}
+
+.export-btn,
+.reports-export-button {
+	padding: 8px 18px;
+	margin-bottom: 12px;
+	font-weight: 600;
+	box-sizing: border-box;
+}
+
+.reports-table-panel,
 .reports-panel {
 	background: #f7fafc;
 	border-radius: 12px;
 	padding: 18px 16px;
 	margin-bottom: 24px;
 	box-shadow: 0 1px 8px rgba(0,0,0,0.04);
-}
-.reports-filter-row {
-	display: flex;
-	gap: 12px;
-	margin-bottom: 12px;
+	width: 100%;
+	box-sizing: border-box;
 }
 /* Announcements Section Styles */
 .dashboard-announcements-section {
@@ -474,6 +511,129 @@
 .dashboard-btn:hover {
 	background: #e2e8f0;
 }
+
+/* System Users Section - Desktop Styles */
+.users-section-header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	margin-bottom: 18px;
+}
+
+.users-header-buttons {
+	display: flex;
+	gap: 8px;
+}
+
+.users-header-buttons .dashboard-btn {
+	white-space: nowrap;
+	margin-right: 0;
+}
+
+.users-search-row {
+	display: flex;
+	gap: 12px;
+	align-items: center;
+	margin-bottom: 18px;
+}
+
+.users-search-row .dashboard-user-search-input {
+	flex: 1;
+	min-width: 250px;
+}
+
+.users-search-buttons {
+	display: flex;
+	gap: 8px;
+}
+
+.users-search-buttons button {
+	white-space: nowrap;
+}
+
+.clear-btn {
+	background: #eee;
+	color: #333;
+}
+
+.clear-btn:hover {
+	background: #ddd;
+}
+
+/* Announcements Section - Desktop Styles */
+.announcements-wrapper {
+	max-width: 900px;
+	margin: 0 auto;
+	padding: 0;
+	width: 100%;
+	box-sizing: border-box;
+	overflow: visible;
+}
+
+.announcements-header {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	margin-bottom: 8px;
+}
+
+.announcement-form-card {
+	background: #f8fafc;
+	border-radius: 16px;
+	box-shadow: 0 2px 16px rgba(33,150,243,0.08);
+	padding: 32px 28px;
+	margin-bottom: 32px;
+	width: 100%;
+	box-sizing: border-box;
+}
+
+.announcement-form {
+	display: flex;
+	flex-direction: column;
+	gap: 20px;
+	width: 100%;
+}
+
+.announcement-form-row {
+	display: flex;
+	gap: 18px;
+	align-items: center;
+	flex-wrap: wrap;
+}
+
+.announcement-form-row select,
+.announcement-form-row input {
+	flex: 0 1 auto;
+}
+
+.announcement-form textarea {
+	padding: 14px 18px;
+	border-radius: 10px;
+	border: 1.5px solid #b6d0f7;
+	font-weight: 500;
+	min-height: 90px;
+	background: #fff;
+	font-family: inherit;
+	font-size: 0.95rem;
+}
+
+.announcement-form-actions {
+	display: flex;
+	justify-content: flex-end;
+	gap: 16px;
+	align-items: center;
+	flex-wrap: wrap;
+}
+
+.announcement-table-card {
+	background: #fff;
+	border-radius: 16px;
+	box-shadow: 0 2px 16px rgba(33,150,243,0.06);
+	padding: 24px 18px;
+	width: 100%;
+	box-sizing: border-box;
+}
+
 .dashboard-filter-row {
 	display: flex;
 	gap: 12px;
@@ -713,11 +873,25 @@
 body {
 	background: #f4f6f8;
 	font-family: 'Segoe UI', Arial, sans-serif;
+	overflow-x: hidden;
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
+
+* {
+	box-sizing: border-box;
+}
+
+html {
+	overflow-x: hidden;
 }
 
 .admin-dashboard-container {
 	display: flex;
 	min-height: 100vh;
+	width: 100vw;
+	overflow-x: hidden;
 }
 
 .admin-sidebar {
@@ -728,7 +902,11 @@ body {
 	box-shadow: 2px 0 8px rgba(0,0,0,0.05);
 	display: flex;
 	flex-direction: column;
-}
+	flex-shrink: 0;
+	overflow-y: auto;
+	overflow-x: hidden;
+	max-height: 100vh;
+},
 .admin-logo {
 	font-size: 1.7rem;
 	font-weight: bold;
@@ -757,11 +935,20 @@ body {
 	display: flex;
 	flex-direction: column;
 	background: #f4f6f8;
+	overflow-x: hidden;
+	overflow-y: auto;
+	min-width: 0;
+	padding-top: 85px;
 }
 .admin-header {
-	background: #fff;
-	padding: 24px 32px 16px 32px;
-	box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+	background: linear-gradient(90deg, #010162 0%, #1a1a8a 100%);
+	padding: 0;
+	box-shadow: 0 2px 8px rgba(1,1,98,0.15);
+	position: fixed !important;
+	top: 0 !important;
+	left: 0 !important;
+	right: 0 !important;
+	z-index: 100 !important;
 }
 
 .admin-header-row {
@@ -843,7 +1030,70 @@ body {
 	.username {
 		display: none;
 	}
+
+	/* Mobile navbar responsiveness (< 768px) */
+	.navbar-school-name {
+		display: none !important;
+	}
+
+	.navbar-dashboard-text {
+		display: none !important;
+	}
+
+	.navbar-avatar {
+		display: none !important;
+	}
+
+	.navbar-inbox-icon {
+		display: none !important;
+	}
+
+	/* Keep visible on mobile */
+	.navbar-logo {
+		display: inline-block !important;
+	}
+
+	.navbar-notification-bell {
+		display: inline-block !important;
+	}
+
+	.hamburger-menu-btn {
+		display: flex !important;
+	}
 }
+
+/* Tablet responsiveness (768px - 1024px) */
+@media (min-width: 768px) and (max-width: 1024px) {
+	.navbar-school-name {
+		display: inline-block !important;
+	}
+
+	.navbar-dashboard-text {
+		display: none !important;
+	}
+
+	.navbar-avatar {
+		display: none !important;
+	}
+
+	.navbar-inbox-icon {
+		display: none !important;
+	}
+
+	/* Keep visible on tablet */
+	.navbar-logo {
+		display: inline-block !important;
+	}
+
+	.navbar-notification-bell {
+		display: inline-block !important;
+	}
+
+	.hamburger-menu-btn {
+		display: flex !important;
+	}
+}
+
 .admin-top-bar {
 	display: flex;
 	align-items: center;
@@ -872,6 +1122,8 @@ body {
 	display: grid;
 	grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
 	gap: 32px;
+	overflow-x: hidden;
+	max-width: 100%;
 }
 .dashboard-card {
 	background: #fff;
@@ -934,5 +1186,1325 @@ body {
 	}
 	.dashboard-users-row {
 		gap: 16px;
+	}
+}
+
+/* Comprehensive Mobile & Tablet Responsive Styles */
+
+/* Mobile: < 768px */
+@media (max-width: 767px) {
+	/* Sidebar positioning for mobile - controlled by inline styles */
+	.admin-sidebar {
+		/* Do not use display: none here - let inline styles handle visibility via left positioning */
+		position: fixed !important;
+		top: 0 !important;
+		/* left positioning controlled by inline JS styles - do NOT set here */
+		width: 260px !important;
+		height: 100vh !important;
+		z-index: 10000 !important;
+		padding-top: 0 !important;
+	}
+
+	.admin-main-content {
+		margin-left: 0;
+	}
+
+	/* Header adjustments */
+	.admin-header {
+		padding: 12px 8px;
+		position: sticky;
+		top: 0;
+		z-index: 100;
+	}
+
+	.admin-header-row {
+		gap: 8px;
+		padding: 0;
+	}
+
+	/* Content adjustments */
+	.admin-content {
+		grid-template-columns: 1fr;
+		padding: 12px;
+		gap: 16px;
+	}
+
+	/* Cards */
+	.redesigned-overview,
+	.redesigned-users-section,
+	.dashboard-reports-section,
+	.dashboard-announcements-section,
+	.redesigned-inbox {
+		padding: 16px 12px;
+		margin-bottom: 16px;
+		border-radius: 12px;
+	}
+
+	/* Inbox specific mobile styles */
+	.admin-inbox-section {
+		max-width: 100% !important;
+		margin: 0 !important;
+		padding: 16px 12px !important;
+	}
+
+	/* Inbox toolbar - responsive button layout */
+	.inbox-toolbar {
+		flex-wrap: wrap !important;
+		gap: 8px !important;
+		margin-bottom: 16px !important;
+	}
+
+	.inbox-toolbar button {
+		padding: 6px 10px !important;
+		font-size: 0.8rem !important;
+		flex: 0 1 auto !important;
+	}
+
+	.inbox-toolbar .dashboard-btn.primary {
+		flex: 1 1 100% !important;
+		min-width: 100px;
+	}
+
+	/* Message cards on mobile */
+	.inbox-message-card {
+		padding: 14px 16px !important;
+		margin-bottom: 8px;
+	}
+
+	.inbox-message-header {
+		flex-direction: column !important;
+		align-items: flex-start !important;
+		gap: 6px !important;
+	}
+
+	.inbox-compose-card {
+		padding: 12px 16px !important;
+	}
+
+	h2 {
+		font-size: 1.3rem !important;
+		margin-bottom: 12px !important;
+	}
+
+	h3 {
+		font-size: 1.1rem !important;
+		margin-bottom: 8px !important;
+	}
+
+	/* Redesigned cards */
+	.redesigned-cards {
+		flex-direction: column;
+		gap: 12px;
+	}
+
+	.redesigned-card {
+		min-width: 100%;
+		flex: 1 1 100%;
+		padding: 16px 12px;
+	}
+
+	.dashboard-card-icon {
+		font-size: 1.8rem;
+	}
+
+	.dashboard-card-value {
+		font-size: 1.8rem;
+	}
+
+	/* Attendance summary row */
+	.dashboard-attendance-row {
+		gap: 12px;
+		margin: 16px 0 8px 0;
+	}
+
+	.attendance-box {
+		padding: 16px 0 12px 0;
+	}
+
+	.attendance-count {
+		font-size: 2rem;
+	}
+
+	.attendance-label {
+		font-size: 1rem;
+	}
+
+	/* User cards */
+	.dashboard-user-card {
+		flex-direction: column;
+		padding: 12px 8px;
+		gap: 8px;
+	}
+
+	.dashboard-user-avatar {
+		margin: 0 auto 8px;
+		width: 48px;
+		height: 48px;
+	}
+
+	.dashboard-user-name {
+		font-size: 1.1rem;
+	}
+
+	.dashboard-user-meta {
+		font-size: 0.9rem;
+		gap: 8px;
+	}
+
+	.dashboard-user-actions {
+		flex-direction: row;
+		gap: 6px;
+		margin-left: 0;
+		justify-content: space-between;
+	}
+
+	.dashboard-btn {
+		padding: 6px 10px;
+		font-size: 0.85rem;
+	}
+
+	/* Search input */
+	.dashboard-user-search-input {
+		min-width: 100px;
+		padding: 6px 10px;
+		font-size: 0.95rem;
+	}
+
+	/* System Users Section - Mobile Optimization */
+	.users-section-header {
+		flex-direction: column !important;
+		align-items: flex-start !important;
+		gap: 12px !important;
+	}
+
+	.users-header-buttons {
+		display: flex !important;
+		gap: 8px !important;
+		width: 100% !important;
+		flex-wrap: wrap !important;
+	}
+
+	.users-header-buttons .dashboard-btn {
+		flex: 1 1 auto !important;
+		padding: 10px 12px !important;
+		font-size: 0.85rem !important;
+		min-width: 50% !important;
+	}
+
+	/* Search row layout on mobile */
+	.users-search-row {
+		flex-direction: column !important;
+		gap: 10px !important;
+		width: 100% !important;
+	}
+
+	.users-search-row .dashboard-user-search-input {
+		width: 100% !important;
+		padding: 10px 12px !important;
+		font-size: 16px !important;
+		box-sizing: border-box !important;
+		min-width: 0 !important;
+	}
+
+	/* Search and Clear buttons container */
+	.users-search-buttons {
+		display: flex !important;
+		gap: 8px !important;
+		width: 100% !important;
+	}
+
+	.users-search-buttons button {
+		flex: 1 !important;
+		padding: 10px 12px !important;
+		font-size: 0.9rem !important;
+		white-space: nowrap !important;
+	}
+
+	.clear-btn {
+		background: #eee !important;
+		color: #333 !important;
+	}
+
+	.clear-btn:hover {
+		background: #ddd !important;
+	}
+
+	/* Tables */
+	.dashboard-table {
+		font-size: 0.85rem;
+	}
+
+	.dashboard-table th,
+	.dashboard-table td {
+		padding: 8px 4px;
+	}
+
+	/* Inbox */
+	.redesigned-inbox {
+		max-width: 100%;
+	}
+
+	.inbox-compose-card {
+		padding: 12px 8px;
+	}
+
+	.inbox-message-card {
+		padding: 12px 8px;
+		border-left-width: 4px;
+	}
+
+	.inbox-message-type {
+		font-size: 0.95rem;
+	}
+
+	.inbox-message-content {
+		font-size: 0.95rem;
+	}
+
+	.inbox-message-delete {
+		padding: 4px 8px;
+		font-size: 0.85rem;
+		margin-left: 0;
+		margin-top: 8px;
+		width: 100%;
+	}
+
+	.inbox-message-footer {
+		flex-direction: column;
+		gap: 8px;
+	}
+
+	/* Forms */
+	.announcement-form {
+		padding: 12px 8px;
+		gap: 8px;
+	}
+
+	.announcement-input {
+		font-size: 0.95rem;
+		padding: 6px 10px;
+	}
+
+	.announcement-form-row {
+		gap: 8px;
+		flex-wrap: wrap;
+	}
+
+	/* Filters */
+	.dashboard-filter-row,
+	.reports-filter-row {
+		flex-direction: column;
+		gap: 8px;
+	}
+
+	.dashboard-filter {
+		padding: 8px 10px;
+		font-size: 0.95rem;
+		width: 100%;
+	}
+
+	/* Overview section */
+	.dashboard-overview-section {
+		padding-left: 8px;
+		padding-right: 8px;
+	}
+
+	.dashboard-overview-header {
+		gap: 12px;
+		margin-bottom: 16px;
+		flex-direction: column;
+		align-items: center;
+		text-align: center;
+	}
+
+	.dashboard-overview-bg {
+		width: 60px;
+		height: 60px;
+	}
+
+	.dashboard-overview-icon {
+		font-size: 2rem;
+	}
+
+	.dashboard-overview-header h2 {
+		font-size: 1.4rem;
+	}
+
+	.dashboard-section-header {
+		flex-direction: column;
+		gap: 8px;
+		align-items: flex-start;
+	}
+
+	.dashboard-section-header h2 {
+		font-size: 1.2rem;
+	}
+
+	/* All section headers - responsive */
+	.redesigned-overview h2,
+	.redesigned-users-section h2,
+	.dashboard-reports-section h2,
+	.dashboard-announcements-section h2,
+	.admin-inbox-section h2 {
+		font-size: 1.4rem !important;
+		margin-bottom: 12px !important;
+	}
+
+	/* Announcements section mobile - fix viewport overflow */
+	.announcements-wrapper {
+		max-width: 100% !important;
+		margin: 0 !important;
+		padding: 12px !important;
+		width: 100% !important;
+		box-sizing: border-box !important;
+		overflow-x: hidden !important;
+	}
+
+	.announcements-header {
+		flex-direction: column !important;
+		align-items: flex-start !important;
+		gap: 8px !important;
+		margin-bottom: 16px !important;
+		width: 100% !important;
+	}
+
+	.announcements-header h2 {
+		font-size: 1.3rem !important;
+		width: 100% !important;
+	}
+
+	.announcement-form-card {
+		padding: 12px !important;
+		margin-bottom: 16px !important;
+		border-radius: 12px !important;
+		width: 100% !important;
+		box-sizing: border-box !important;
+		overflow-x: hidden !important;
+	}
+
+	.announcement-form {
+		gap: 10px !important;
+		width: 100% !important;
+	}
+
+	/* Announcement form rows - stack on mobile */
+	.announcement-form-row {
+		flex-direction: column !important;
+		gap: 8px !important;
+		align-items: stretch !important;
+		width: 100% !important;
+	}
+
+	.announcement-form-row select,
+	.announcement-form-row input {
+		width: 100% !important;
+		padding: 10px 12px !important;
+		font-size: 0.95rem !important;
+		box-sizing: border-box !important;
+		min-width: 0 !important;
+		border-radius: 6px !important;
+	}
+
+	.announcement-form textarea {
+		padding: 10px 12px !important;
+		font-size: 0.95rem !important;
+		min-height: 100px !important;
+		border-radius: 6px !important;
+		width: 100% !important;
+		box-sizing: border-box !important;
+	}
+
+	/* Announcement form actions */
+	.announcement-form-actions {
+		flex-direction: column !important;
+		justify-content: flex-start !important;
+		align-items: stretch !important;
+		gap: 8px !important;
+		width: 100% !important;
+	}
+
+	.announcement-form-actions button {
+		width: 100% !important;
+		padding: 10px 16px !important;
+		font-size: 0.9rem !important;
+		box-sizing: border-box !important;
+	}
+
+	.announcement-form-actions span {
+		width: 100% !important;
+		text-align: center !important;
+		font-size: 0.85rem !important;
+	}
+
+	/* Announcement table card on mobile */
+	.announcement-table-card {
+		padding: 12px !important;
+		border-radius: 12px !important;
+		width: 100% !important;
+		box-sizing: border-box !important;
+		overflow-x: auto !important;
+		-webkit-overflow-scrolling: touch !important;
+	}
+
+	.announcement-table-card h3 {
+		font-size: 1.1rem !important;
+		margin-bottom: 12px !important;
+		width: 100% !important;
+	}
+
+	/* Announcement table responsive on mobile */
+	.dashboard-announcements-section .dashboard-table {
+		font-size: 0.7rem !important;
+		min-width: 100% !important;
+		width: 100% !important;
+		white-space: nowrap !important;
+	}
+
+	.dashboard-announcements-section .dashboard-table th,
+	.dashboard-announcements-section .dashboard-table td {
+		padding: 6px 4px !important;
+		text-align: left !important;
+		overflow: hidden !important;
+		text-overflow: ellipsis !important;
+	}
+
+	.dashboard-announcements-section .dashboard-table thead {
+		background: #e3f2fd !important;
+	}
+
+	.dashboard-announcements-section .dashboard-table tbody tr {
+		border-bottom: 1px solid #f1f5f9 !important;
+	}
+
+	/* Announcement cards on mobile */
+	.announcement-card {
+		padding: 12px 16px !important;
+		margin-bottom: 12px !important;
+	}
+
+	.announcement-card-title {
+		font-size: 1.1rem !important;
+		margin-bottom: 6px !important;
+	}
+
+	.announcement-card-date {
+		font-size: 0.85rem !important;
+	}
+
+	/* Subject/Section cards on mobile */
+	.subject-section-card {
+		padding: 12px 16px !important;
+		margin-bottom: 12px !important;
+	}
+
+	.subject-section-card-title {
+		font-size: 1.1rem !important;
+	}
+
+	/* Report section on mobile */
+	.dashboard-reports-section {
+		padding: 16px 12px !important;
+	}
+
+	.reports-wrapper {
+		max-width: 100% !important;
+		margin: 0 !important;
+		padding: 12px !important;
+		width: 100% !important;
+		box-sizing: border-box !important;
+		overflow-x: hidden !important;
+	}
+
+	.reports-filter-row {
+		flex-direction: column !important;
+		gap: 8px !important;
+		align-items: stretch !important;
+		width: 100% !important;
+		margin-bottom: 12px !important;
+	}
+
+	.reports-filter-row label {
+		display: block !important;
+		font-weight: 600 !important;
+		margin-bottom: 4px !important;
+		font-size: 0.95rem !important;
+	}
+
+	.reports-filter-row input {
+		width: 100% !important;
+		padding: 10px 12px !important;
+		font-size: 16px !important;
+		border-radius: 6px !important;
+		box-sizing: border-box !important;
+		min-width: 0 !important;
+	}
+
+	.export-btn,
+	.reports-export-button {
+		width: 100% !important;
+		padding: 10px 16px !important;
+		font-size: 0.9rem !important;
+		box-sizing: border-box !important;
+		margin-bottom: 12px !important;
+	}
+
+	.reports-table-panel {
+		width: 100% !important;
+		overflow-x: auto !important;
+		-webkit-overflow-scrolling: touch !important;
+		border-radius: 12px !important;
+		background: #fff !important;
+	}
+
+	.dashboard-reports-section .dashboard-table {
+		font-size: 0.75rem !important;
+		min-width: 100% !important;
+		width: 100% !important;
+		white-space: nowrap !important;
+	}
+
+	.dashboard-reports-section .dashboard-table th,
+	.dashboard-reports-section .dashboard-table td {
+		padding: 8px 6px !important;
+		text-align: left !important;
+		overflow: hidden !important;
+		text-overflow: ellipsis !important;
+	}
+
+	.dashboard-reports-section .dashboard-table thead {
+		background: #f0f2f5 !important;
+	}
+
+	.dashboard-reports-section .dashboard-table tbody tr {
+		border-bottom: 1px solid #f1f5f9 !important;
+	}
+
+	/* Announcement form on mobile */
+	.announcement-form {
+		padding: 12px 16px !important;
+		margin-bottom: 16px !important;
+	}
+
+	.announcement-form .form-group {
+		margin-bottom: 8px !important;
+	}
+
+	.announcement-form input,
+	.announcement-form textarea {
+		padding: 8px 12px !important;
+		font-size: 0.95rem !important;
+		width: 100% !important;
+	}
+
+	.announcement-form-actions {
+		display: flex !important;
+		gap: 8px !important;
+		flex-wrap: wrap !important;
+		margin-top: 12px !important;
+	}
+
+	.announcement-form-actions button {
+		flex: 1 1 auto !important;
+		padding: 8px 12px !important;
+		font-size: 0.85rem !important;
+		min-width: 80px !important;
+	}
+
+	/* Tables responsive wrapper on mobile */
+	.table-wrapper {
+		overflow-x: auto !important;
+		-webkit-overflow-scrolling: touch !important;
+	}
+
+	.dashboard-table {
+		font-size: 0.75rem !important;
+		width: 100% !important;
+		white-space: nowrap !important;
+	}
+
+	.dashboard-table thead {
+		background: #f0f2f5 !important;
+	}
+
+	.dashboard-table th,
+	.dashboard-table td {
+		padding: 8px 6px !important;
+		text-align: left !important;
+	}
+
+	/* Student management on mobile */
+	.student-card {
+		padding: 12px 16px !important;
+		margin-bottom: 12px !important;
+	}
+
+	.student-card-header {
+		flex-direction: column !important;
+		align-items: flex-start !important;
+		gap: 6px !important;
+	}
+
+	.student-card-name {
+		font-size: 1.1rem !important;
+		font-weight: 600 !important;
+	}
+
+	.student-card-actions {
+		gap: 6px !important;
+		margin-top: 8px !important;
+		width: 100% !important;
+	}
+
+	.student-card-actions button {
+		flex: 1 1 auto !important;
+		padding: 6px 10px !important;
+		font-size: 0.75rem !important;
+	}
+
+	/* User management on mobile - better spacing */
+	.redesigned-users-section .dashboard-user-card {
+		margin-bottom: 12px !important;
+		padding: 12px 16px !important;
+	}
+
+	.dashboard-user-card .dashboard-user-info {
+		flex: 1 !important;
+		min-width: 0 !important;
+	}
+
+	.dashboard-user-card .dashboard-user-actions {
+		width: 100% !important;
+		margin-top: 8px !important;
+		gap: 6px !important;
+	}
+
+	.dashboard-user-actions button {
+		flex: 1 1 auto !important;
+		padding: 6px 10px !important;
+		font-size: 0.75rem !important;
+	}
+
+	/* Generic section containers on mobile */
+	.section-container {
+		padding: 0 !important;
+	}
+
+	/* Button sizing for mobile */
+	.dashboard-btn.primary,
+	.dashboard-btn.danger,
+	.dashboard-btn.success {
+		padding: 8px 12px !important;
+		font-size: 0.85rem !important;
+		border-radius: 6px !important;
+		min-height: 36px !important;
+		display: flex !important;
+		align-items: center !important;
+		justify-content: center !important;
+	}
+
+	/* Form controls on mobile */
+	input[type="text"],
+	input[type="email"],
+	input[type="password"],
+	input[type="date"],
+	input[type="month"],
+	select,
+	textarea {
+		font-size: 16px !important;
+		padding: 8px 12px !important;
+		border-radius: 6px !important;
+		width: 100% !important;
+	}
+
+	/* Ensure clickable elements are touch-friendly */
+	button, a {
+		min-height: 44px !important;
+		min-width: 44px !important;
+	}
+
+	/* Form layouts - stack everything on mobile */
+	form {
+		display: flex !important;
+		flex-direction: column !important;
+		gap: 12px !important;
+	}
+
+	form > div,
+	form > label {
+		display: flex !important;
+		flex-direction: column !important;
+		gap: 4px !important;
+		width: 100% !important;
+	}
+
+	form input,
+	form textarea,
+	form select {
+		width: 100% !important;
+		padding: 10px 12px !important;
+		font-size: 16px !important;
+		border: 1px solid #ddd !important;
+		border-radius: 6px !important;
+		box-sizing: border-box !important;
+	}
+
+	/* Photo upload section */
+	.photo-section,
+	.image-upload-section {
+		display: flex !important;
+		flex-direction: column !important;
+		gap: 8px !important;
+		margin-bottom: 12px !important;
+	}
+
+	.photo-button,
+	.upload-button,
+	.take-photo-btn,
+	.upload-photo-btn {
+		padding: 10px 16px !important;
+		font-size: 0.9rem !important;
+		border-radius: 6px !important;
+		width: 100% !important;
+		white-space: nowrap !important;
+		display: flex !important;
+		align-items: center !important;
+		justify-content: center !important;
+		gap: 6px !important;
+	}
+
+	/* Two-button layout on mobile - side by side */
+	.photo-button-group,
+	.button-row {
+		display: flex !important;
+		gap: 8px !important;
+		width: 100% !important;
+	}
+
+	.photo-button-group > button,
+	.button-row > button {
+		flex: 1 1 50% !important;
+		padding: 10px 8px !important;
+		font-size: 0.85rem !important;
+	}
+
+	/* Camera preview on mobile */
+	.webcam-container,
+	.camera-preview {
+		width: 100% !important;
+		max-width: 100% !important;
+		margin-bottom: 12px !important;
+	}
+
+	.webcam-container video {
+		width: 100% !important;
+		height: auto !important;
+		border-radius: 8px !important;
+	}
+
+	/* Search and filter row on mobile */
+	.search-row,
+	.filter-row {
+		display: flex !important;
+		flex-direction: column !important;
+		gap: 8px !important;
+		width: 100% !important;
+	}
+
+	.search-row > input,
+	.search-row > button,
+	.filter-row > select,
+	.filter-row > button {
+		width: 100% !important;
+		padding: 8px 12px !important;
+		font-size: 0.9rem !important;
+	}
+
+	/* Modal/Dialog on mobile */
+	.modal-content,
+	.dialog-content {
+		padding: 16px !important;
+	}
+
+	.modal-content h2,
+	.dialog-content h2 {
+		font-size: 1.3rem !important;
+		margin-bottom: 12px !important;
+	}
+
+	/* List items (users, students, etc) on mobile */
+	.list-item,
+	.item-card {
+		padding: 12px 16px !important;
+		margin-bottom: 12px !important;
+		display: flex !important;
+		flex-direction: column !important;
+		gap: 8px !important;
+	}
+
+	.item-info {
+		display: flex !important;
+		flex-direction: column !important;
+		gap: 4px !important;
+	}
+
+	.item-actions {
+		display: flex !important;
+		gap: 6px !important;
+		width: 100% !important;
+	}
+
+	.item-actions button {
+		flex: 1 1 50% !important;
+		padding: 6px 8px !important;
+		font-size: 0.75rem !important;
+	}
+
+	/* Header section on mobile */
+	.section-header {
+		padding: 12px 16px !important;
+		margin-bottom: 12px !important;
+	}
+
+	.section-header h2,
+	.section-header h3 {
+		font-size: 1.3rem !important;
+		margin-bottom: 8px !important;
+	}
+
+	/* Layout helpers */
+	.flex-row {
+		flex-direction: column !important;
+	}
+
+	.grid-2 {
+		grid-template-columns: 1fr !important;
+	}
+
+	.grid-3 {
+		grid-template-columns: 1fr !important;
+	}
+
+	/* Avatar on mobile */
+	.avatar,
+	.profile-pic {
+		width: 60px !important;
+		height: 60px !important;
+		margin: 0 auto 8px !important;
+	}
+
+	/* Status badge */
+	.status-badge {
+		display: inline-block !important;
+		padding: 4px 10px !important;
+		border-radius: 20px !important;
+		font-size: 0.8rem !important;
+	}
+
+	/* Tab buttons on mobile */
+	.tab-buttons,
+	.nav-buttons {
+		display: flex !important;
+		flex-wrap: wrap !important;
+		gap: 6px !important;
+		margin-bottom: 12px !important;
+	}
+
+	.tab-buttons button,
+	.nav-buttons button {
+		flex: 1 1 45% !important;
+		padding: 8px 10px !important;
+		font-size: 0.8rem !important;
+		min-width: 70px !important;
+	}
+
+	/* Specific to Add forms */
+	.add-form-section {
+		background: #f8f9fb !important;
+		padding: 12px 16px !important;
+		border-radius: 8px !important;
+		margin-bottom: 12px !important;
+	}
+
+	.add-form-section label {
+		font-weight: 600 !important;
+		font-size: 0.95rem !important;
+		margin-bottom: 6px !important;
+	}
+
+	.add-form-section input,
+	.add-form-section select {
+		width: 100% !important;
+		padding: 8px 12px !important;
+		border: 1px solid #ddd !important;
+		border-radius: 6px !important;
+	}
+
+	/* Primary button full width on mobile */
+	.register-btn,
+	.submit-btn,
+	.add-btn,
+	.save-btn {
+		width: 100% !important;
+		padding: 10px 16px !important;
+		font-size: 0.95rem !important;
+	}
+
+	/* Horizontal line/divider */
+	hr {
+		margin: 12px 0 !important;
+	}
+
+	/* List/Table section on mobile */
+	.list-section,
+	.table-section {
+		padding: 0 !important;
+	}
+
+	.list-section h3,
+	.table-section h3 {
+		padding: 12px 16px !important;
+		margin-bottom: 0 !important;
+	}
+
+	/* Additional form and input styles for mobile */
+	/* Ensure all inputs and selects are full width and properly sized */
+	*:not(button):not(.button):not(.btn) {
+		max-width: 100% !important;
+	}
+
+	/* Input fields full width */
+	input[type="text"],
+	input[type="email"],
+	input[type="password"],
+	input[type="search"],
+	input[type="number"],
+	input[type="date"],
+	input[type="month"],
+	select,
+	textarea {
+		width: 100% !important;
+		max-width: 100% !important;
+		padding: 10px 12px !important;
+		font-size: 16px !important;
+		box-sizing: border-box !important;
+	}
+
+	/* Ensure text areas are properly sized */
+	textarea {
+		min-height: 100px !important;
+		resize: vertical !important;
+	}
+
+	/* Button alignment - ensure they don't overflow */
+	button,
+	.btn,
+	.button {
+		box-sizing: border-box !important;
+		font-size: 0.9rem !important;
+	}
+
+	/* Admin-specific form wrappers on mobile */
+	.admin-form-wrapper,
+	.form-wrapper {
+		display: flex !important;
+		flex-direction: column !important;
+		gap: 12px !important;
+		width: 100% !important;
+		padding: 0 !important;
+		margin: 0 !important;
+	}
+
+	.admin-form-wrapper > div,
+	.form-wrapper > div {
+		width: 100% !important;
+		display: flex !important;
+		flex-direction: column !important;
+		gap: 4px !important;
+	}
+
+	.admin-form-wrapper input,
+	.admin-form-wrapper select,
+	.form-wrapper input,
+	.form-wrapper select {
+		width: 100% !important;
+	}
+
+	/* Specific to search and filter rows */
+	.dashboard-user-search-row {
+		flex-direction: column !important;
+		gap: 8px !important;
+		align-items: stretch !important;
+	}
+
+	.dashboard-user-search-row input,
+	.dashboard-user-search-row button {
+		width: 100% !important;
+		box-sizing: border-box !important;
+	}
+
+	/* Ensure no horizontal overflow on mobile */
+	.admin-header-row,
+	.admin-content,
+	.redesigned-inbox {
+		overflow-x: hidden !important;
+	}
+
+	/* Button groups - make them stack or wrap properly */
+	.admin-inbox-section button,
+	.dashboard-btn,
+	button {
+		overflow: hidden !important;
+		text-overflow: ellipsis !important;
+	}
+
+	/* Prevent button text wrapping issues */
+	button {
+		white-space: nowrap !important;
+		overflow: hidden !important;
+		text-overflow: ellipsis !important;
+	}
+
+	/* Allow some buttons to wrap text if needed */
+	.primary-button,
+	.secondary-button,
+	.register-btn,
+	.submit-btn {
+		white-space: normal !important;
+	}
+
+	/* Two-column button layouts on mobile should stack */
+	.button-pair,
+	.action-pair {
+		display: flex !important;
+		gap: 8px !important;
+		width: 100% !important;
+	}
+
+	.button-pair button,
+	.action-pair button {
+		flex: 1 !important;
+		min-width: 50% !important;
+	}
+
+	/* Full width submit buttons */
+	[type="submit"],
+	.submit-btn {
+		width: 100% !important;
+		padding: 10px 16px !important;
+	}
+}
+
+/* Tablet: 768px - 1024px */
+@media (min-width: 768px) and (max-width: 1024px) {
+	/* Header */
+	.admin-header {
+		padding: 16px 16px;
+	}
+
+	.admin-header-row {
+		gap: 12px;
+	}
+
+	/* Content */
+	.admin-content {
+		grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+		padding: 16px;
+		gap: 16px;
+	}
+
+	/* Cards */
+	.redesigned-overview,
+	.redesigned-users-section,
+	.dashboard-reports-section,
+	.dashboard-announcements-section,
+	.redesigned-inbox {
+		padding: 20px 16px;
+		margin-bottom: 20px;
+	}
+
+	h2 {
+		font-size: 1.4rem !important;
+		margin-bottom: 12px !important;
+	}
+
+	h3 {
+		font-size: 1.1rem !important;
+		margin-bottom: 8px !important;
+	}
+
+	/* Redesigned cards */
+	.redesigned-cards {
+		gap: 16px;
+	}
+
+	.redesigned-card {
+		min-width: 160px;
+		flex: 1 1 160px;
+		padding: 18px 14px;
+	}
+
+	.dashboard-card-icon {
+		font-size: 2rem;
+	}
+
+	.dashboard-card-value {
+		font-size: 1.9rem;
+	}
+
+	/* Attendance summary */
+	.dashboard-attendance-row {
+		gap: 18px;
+		margin: 18px 0 10px 0;
+	}
+
+	.attendance-box {
+		padding: 18px 0 14px 0;
+	}
+
+	.attendance-count {
+		font-size: 2.1rem;
+	}
+
+	/* User cards */
+	.dashboard-user-card {
+		padding: 14px 12px;
+		gap: 12px;
+	}
+
+	.dashboard-user-avatar {
+		width: 52px;
+		height: 52px;
+		margin-right: 8px;
+	}
+
+	.dashboard-user-name {
+		font-size: 1.1rem;
+	}
+
+	.dashboard-user-actions {
+		flex-direction: row;
+		gap: 6px;
+	}
+
+	.dashboard-btn {
+		padding: 6px 12px;
+		font-size: 0.9rem;
+	}
+
+	/* Search */
+	.dashboard-user-search-row {
+		gap: 8px;
+	}
+
+	.dashboard-user-search-input {
+		min-width: 140px;
+		padding: 8px 12px;
+	}
+
+	/* Tables */
+	.dashboard-table {
+		font-size: 0.9rem;
+	}
+
+	.dashboard-table th,
+	.dashboard-table td {
+		padding: 10px 6px;
+	}
+
+	/* Inbox */
+	.redesigned-inbox {
+		max-width: 100%;
+	}
+
+	.inbox-compose-card {
+		padding: 14px 12px;
+	}
+
+	.inbox-message-card {
+		padding: 16px 12px;
+	}
+
+	.inbox-message-type {
+		font-size: 1rem;
+	}
+
+	.inbox-message-content {
+		font-size: 1rem;
+	}
+
+	.inbox-message-footer {
+		gap: 12px;
+	}
+
+	.inbox-message-delete {
+		padding: 4px 10px;
+		font-size: 0.9rem;
+	}
+
+	/* Forms */
+	.announcement-form {
+		padding: 14px 12px;
+		gap: 10px;
+	}
+
+	.announcement-input {
+		font-size: 0.95rem;
+		padding: 8px 12px;
+	}
+
+	.announcement-form-row {
+		gap: 10px;
+	}
+
+	/* Filters */
+	.dashboard-filter-row,
+	.reports-filter-row {
+		flex-wrap: wrap;
+		gap: 10px;
+	}
+
+	.dashboard-filter {
+		padding: 8px 12px;
+		font-size: 0.95rem;
+		flex: 1;
+		min-width: 150px;
+	}
+
+	/* Overview section */
+	.dashboard-overview-section {
+		padding-left: 12px;
+		padding-right: 12px;
+	}
+
+	.dashboard-overview-header {
+		gap: 16px;
+		margin-bottom: 24px;
+	}
+
+	.dashboard-overview-header h2 {
+		font-size: 1.6rem;
+	}
+
+	.dashboard-section-header {
+		margin-bottom: 12px;
+	}
+
+	.dashboard-section-header h2 {
+		font-size: 1.3rem;
+	}
+
+	/* Sidebar */
+	.admin-sidebar {
+		width: 200px;
+	}
+
+	.admin-logo {
+		font-size: 1.5rem;
+		margin-bottom: 24px;
+	}
+
+	.admin-nav li {
+		padding: 14px 20px;
+		font-size: 1rem;
 	}
 }
