@@ -31,7 +31,7 @@ function Login() {
 		return () => clearInterval(interval);
 	}, [backgroundImages.length]);
 
-	// Keep backend awake by pinging it every 5 minutes
+	// Keep backend awake by pinging it every 1 minute
 	useEffect(() => {
 		const pingBackend = () => {
 			fetch(`${process.env.REACT_APP_API_URL}/`, { method: 'GET' })
@@ -41,8 +41,8 @@ function Login() {
 		// Ping immediately on mount
 		pingBackend();
 
-		// Then ping every 5 minutes
-		const pingInterval = setInterval(pingBackend, 5 * 60 * 1000);
+		// Then ping every 1 minute to keep backend warm
+		const pingInterval = setInterval(pingBackend, 1 * 60 * 1000);
 
 		return () => clearInterval(pingInterval);
 	}, []);
@@ -178,7 +178,7 @@ function Login() {
 							Remember me
 						</label>
 						<button type="submit" className="login-button" disabled={isLoading}>
-							{isLoading ? 'Signing in... (May take up to 30 seconds)' : 'Sign In'}
+							{isLoading ? 'Signing in...' : 'Sign In'}
 						</button>
 						{/* Show error message */}
 						{errorMessage && <div className="error-message">{errorMessage}</div>}
