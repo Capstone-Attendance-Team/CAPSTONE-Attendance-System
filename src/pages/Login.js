@@ -34,8 +34,9 @@ function Login() {
 	// Keep backend awake by pinging it every 30 seconds
 	useEffect(() => {
 		const pingBackend = () => {
-			fetch(`${process.env.REACT_APP_API_URL}/`, { method: 'GET' })
-				.catch(() => {}); // Ignore errors silently
+			// Temporarily disabled - causing CORS errors
+			// fetch(`${process.env.REACT_APP_API_URL}/`, { method: 'GET' })
+			// 	.catch(() => {}); 
 		};
 
 		// Ping immediately on mount
@@ -47,7 +48,7 @@ function Login() {
 		return () => clearInterval(pingInterval);
 	}, []);
 
-	let renderError = null;
+	let renderError = null;	
 	try {
 		const handleSubmit = async (e) => {
 			e.preventDefault();
