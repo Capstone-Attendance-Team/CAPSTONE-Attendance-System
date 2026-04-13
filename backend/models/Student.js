@@ -29,6 +29,23 @@ const studentSchema = new mongoose.Schema(
       type: [Number], // face embedding array
       required: false,
     },
+    parentId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User', // Link to parent user
+      default: null,
+    },
+    parentEmail: {
+      type: String, // Store parent email for quick access
+      default: null,
+      match: [
+        /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+        'Please provide a valid email address',
+      ],
+    },
+    parentPhoneNumber: {
+      type: String, // Parent phone number for SMS (format: +1234567890)
+      default: null,
+    },
   },
   { timestamps: true }
 );

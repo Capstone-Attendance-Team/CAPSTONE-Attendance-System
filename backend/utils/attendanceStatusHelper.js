@@ -2,24 +2,24 @@
  * Attendance Status Helper
  * Determines attendance status based on arrival time
  * 
- * Default Time Thresholds (configurable):
- * - Present: Before LATE_THRESHOLD (7:30 AM)
- * - Late: Between LATE_THRESHOLD and ABSENT_THRESHOLD (7:30 AM - 8:30 AM)
- * - Absent: After ABSENT_THRESHOLD (8:30 AM)
- * 
- * TODO: Integrate with actual class schedule from database
- * This should fetch the correct time thresholds from school settings
+ * Updated Time Thresholds:
+ * - Present: 7:00 AM - 7:30 AM (Before LATE_THRESHOLD)
+ * - Late: 7:31 AM - 8:30 AM (Between LATE_THRESHOLD and ABSENT_THRESHOLD)
+ * - Absent: After 8:31 AM (After ABSENT_THRESHOLD) - PARENT NOTIFIED
+ * - Attendance window: 7:00 AM - 3:00 PM
  */
 
-// Default thresholds - These should be configurable from school settings
-const DEFAULT_LATE_THRESHOLD = '07:30'; // Start of late window
-const DEFAULT_ABSENT_THRESHOLD = '08:30'; // Start of absent
+// Updated thresholds for email notification system
+const DEFAULT_EARLY_OPEN = '07:00';  // Window opens
+const DEFAULT_LATE_THRESHOLD = '07:31';  // Marks as late (was 7:30, now 7:31)
+const DEFAULT_ABSENT_THRESHOLD = '08:31'; // Marks as absent & notifies parents (was 8:30, now 8:31)
+const DEFAULT_ATTENDANCE_WINDOW_END = '15:00'; // 3:00 PM
 
 /**
  * Calculate attendance status based on arrival time
  * @param {string} arrivalTime - Time in HH:mm or HH:mm:ss format (24-hour)
- * @param {string} lateThreshold - Optional: Time when student is considered late (default: 07:30)
- * @param {string} absentThreshold - Optional: Time when student is considered absent (default: 08:30)
+ * @param {string} lateThreshold - Optional: Time when student is considered late (default: 07:31)
+ * @param {string} absentThreshold - Optional: Time when student is considered absent (default: 08:31)
  * @returns {string} - Status: 'present', 'late', or 'absent'
  */
 function getStatusByArrivalTime(arrivalTime, lateThreshold = DEFAULT_LATE_THRESHOLD, absentThreshold = DEFAULT_ABSENT_THRESHOLD) {
@@ -30,13 +30,13 @@ function getStatusByArrivalTime(arrivalTime, lateThreshold = DEFAULT_LATE_THRESH
   // Normalize arrival time to HH:mm format
   const normalizedTime = arrivalTime.substring(0, 5);
 
-  // Compare times
-  if (normalizedTime <= lateThreshold) {
-    return 'present';
+  // Compare times - Updated logic for new thresholds
+  if (normalizedTime < lateThreshold) {
+    return 'present'; // Before 7:31 AM
   } else if (normalizedTime <= absentThreshold) {
-    return 'late';
+    return 'late'; // 7:31 AM to 8:31 AM
   } else {
-    return 'absent';
+    return 'absent'; // After 8:31 AM - PARENT NOTIFIED
   }
 }
 

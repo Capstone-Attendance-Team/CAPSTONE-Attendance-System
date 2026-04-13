@@ -44,6 +44,38 @@ const attendanceSchema = new mongoose.Schema(
       type: String,
       default: 'Unknown',
     },
+    // Email notification tracking
+    parentNotified: {
+      type: Boolean,
+      default: false,
+    },
+    parentNotificationTime: {
+      type: Date,
+      default: null,
+    },
+    parentNotificationStatus: {
+      type: String,
+      enum: ['pending', 'sent', 'failed'],
+      default: null,
+    },
+    // SMS notification tracking
+    smsNotificationSent: {
+      type: Boolean,
+      default: false,
+    },
+    smsNotificationTime: {
+      type: Date,
+      default: null,
+    },
+    smsNotificationStatus: {
+      type: String,
+      enum: ['pending', 'sent', 'failed'],
+      default: null,
+    },
+    smsTwilioMessageSid: {
+      type: String, // Twilio message tracking ID
+      default: null,
+    },
   },
   { timestamps: true }
 );

@@ -8,11 +8,38 @@ const { Student, Attendance, User, Message, Notification, Announcement } = requi
 const app = express();
 
 // Middleware
-// CORS Configuration
+// CORS Configuration - Handle both local development and production
 const corsOptions = {
-  origin: process.env.CORS_ORIGIN || '*',
+  origin: function (origin, callback) {
+    // Allowed origins
+    const allowedOrigins = [
+      'http://localhost:3000',
+      'http://localhost:3001',
+      'http://localhost:3002',
+      'http://localhost:5000',
+      'http://localhost:5001',
+      'http://localhost:5002',
+      'http://127.0.0.1:3000',
+      'http://127.0.0.1:3001',
+      'http://127.0.0.1:5000',
+      'http://127.0.0.1:5001',
+      process.env.CORS_ORIGIN // Production URL from .env
+    ].filter(Boolean);
+
+    // Development mode: allow all localhost
+    if (process.env.NODE_ENV === 'development') {
+      return callback(null, true);
+    }
+
+    // Production mode: check against allowed origins
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('CORS not allowed'));
+    }
+  },
   credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
   allowedHeaders: ['Content-Type', 'Authorization']
 };
 app.use(cors(corsOptions));
@@ -310,6 +337,204 @@ app.put('/api/notifications/:id/read', async (req, res) => {
       { new: true }
     );
     res.json(notification);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// ==================== ADDITIONAL STUDENT ROUTES (Frontend compatibility) ====================
+
+// Get all students with /list alias
+app.get('/api/students/list', async (req, res) => {
+  try {
+    const students = await Student.find();
+    res.json(students);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Add student with /add alias
+app.post('/api/students/add', async (req, res) => {
+  try {
+    const student = new Student(req.body);
+    await student.save();
+    res.status(201).json(student);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+});
+
+// Update student with /update alias
+app.put('/api/students/update/:id', async (req, res) => {
+  try {
+    const student = await Student.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    if (!student) return res.status(404).json({ error: 'Student not found' });
+    res.json(student);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+});
+
+// Delete student with /delete alias
+app.delete('/api/students/delete/:id', async (req, res) => {
+  try {
+    const student = await Student.findByIdAndDelete(req.params.id);
+    if (!student) return res.status(404).json({ error: 'Student not found' });
+    res.json({ message: 'Student deleted' });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// ==================== ADDITIONAL USER ROUTES (Frontend compatibility) ====================
+
+// Get users with /list alias - supports filtering by type
+app.get('/api/user/list', async (req, res) => {
+  try {
+    const query = {};
+    if (req.query.type) {
+      query.type = req.query.type;
+    }
+    const users = await User.find(query).populate('linkedStudents');
+    res.json({ users });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Get user by ID
+app.get('/api/user/:id', async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id).populate('linkedStudents');
+    if (!user) return res.status(404).json({ error: 'User not found' });
+    res.json(user);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Register user
+app.post('/api/user/register', async (req, res) => {
+  try {
+    const user = new User(req.body);
+    await user.save();
+    res.status(201).json({ success: true, user });
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+});
+
+// Delete user
+app.delete('/api/user/delete/:userId', async (req, res) => {
+  try {
+    const user = await User.findByIdAndDelete(req.params.userId);
+    if (!user) return res.status(404).json({ error: 'User not found' });
+    res.json({ message: 'User deleted successfully' });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// ==================== ADDITIONAL MESSAGE ROUTES (Frontend compatibility) ====================
+
+// Get inbox messages for a user
+app.get('/api/message/inbox/:userId', async (req, res) => {
+  try {
+    const role = req.query.role || 'user';
+    const messages = await Message.find({
+      recipient: req.params.userId
+    }).populate('sender recipient');
+    res.json(messages);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Get sent messages for a user
+app.get('/api/message/sent/:userId', async (req, res) => {
+  try {
+    const messages = await Message.find({
+      sender: req.params.userId
+    }).populate('sender recipient');
+    res.json(messages);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Send message
+app.post('/api/message/send', async (req, res) => {
+  try {
+    const message = new Message(req.body);
+    await message.save();
+    await message.populate('sender recipient');
+    res.status(201).json(message);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+});
+
+// Delete message
+app.delete('/api/message/:messageId', async (req, res) => {
+  try {
+    const message = await Message.findByIdAndDelete(req.params.messageId);
+    if (!message) return res.status(404).json({ error: 'Message not found' });
+    res.json({ message: 'Message deleted' });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Update message status
+app.patch('/api/message/:messageId/status', async (req, res) => {
+  try {
+    const { status } = req.body;
+    const message = await Message.findByIdAndUpdate(
+      req.params.messageId,
+      { status },
+      { new: true }
+    );
+    if (!message) return res.status(404).json({ error: 'Message not found' });
+    res.json(message);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// ==================== ATTENDANCE ROUTES (Frontend compatibility) ====================
+
+// Get attendance by sections and date
+app.get('/api/attendance/sections', async (req, res) => {
+  try {
+    const { date } = req.query;
+    
+    if (!date) {
+      return res.status(400).json({ error: 'Date query parameter required' });
+    }
+
+    const attendance = await Attendance.find({
+      date: date
+    }).populate('recordedBy', 'username email type');
+    
+    res.json(attendance);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// ==================== SUBJECT/SECTION ROUTES ====================
+
+// Get all subject sections (mock endpoint - can be extended)
+app.get('/api/subjectSection/list', async (req, res) => {
+  try {
+    // Return mock data or extend with actual SubjectSection model
+    const sections = [
+      { _id: '101', name: '101', section: 'Section A' },
+      { _id: '102', name: '102', section: 'Section B' },
+      { _id: '103', name: '103', section: 'Section C' }
+    ];
+    res.json(sections);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

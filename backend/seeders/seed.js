@@ -19,6 +19,8 @@ const sampleStudents = [
     photo: 'data:image/jpeg;base64,...', // Replace with actual image
     status: 'Active',
     descriptor: Array(128).fill(0.5), // Mock face descriptor
+    parentEmail: 'parent1@email.com',
+    parentPhoneNumber: '+639123456789',
   },
   {
     fullName: 'Maria Garcia',
@@ -27,6 +29,8 @@ const sampleStudents = [
     photo: 'data:image/jpeg;base64,...',
     status: 'Active',
     descriptor: Array(128).fill(0.6),
+    parentEmail: 'parent2@email.com',
+    parentPhoneNumber: '+639234567890',
   },
   {
     fullName: 'John Smith',
@@ -35,6 +39,8 @@ const sampleStudents = [
     photo: 'data:image/jpeg;base64,...',
     status: 'Active',
     descriptor: Array(128).fill(0.55),
+    parentEmail: 'parent3@email.com',
+    parentPhoneNumber: '+639345678901',
   },
   {
     fullName: 'Sarah Johnson',
@@ -43,6 +49,8 @@ const sampleStudents = [
     photo: 'data:image/jpeg;base64,...',
     status: 'Active',
     descriptor: Array(128).fill(0.48),
+    parentEmail: 'parent4@email.com',
+    parentPhoneNumber: '+639924215058',
   },
   {
     fullName: 'Michael Chen',
@@ -51,6 +59,8 @@ const sampleStudents = [
     photo: 'data:image/jpeg;base64,...',
     status: 'Active',
     descriptor: Array(128).fill(0.65),
+    parentEmail: 'parent5@email.com',
+    parentPhoneNumber: '+639567890123',
   },
 ];
 
@@ -130,6 +140,12 @@ const seedDatabase = async () => {
     if (parentUser && createdStudents.length > 0) {
       parentUser.linkedStudents = [createdStudents[0]._id];
       await parentUser.save();
+      
+      // Also link the student to the parent
+      createdStudents[0].parentId = parentUser._id;
+      createdStudents[0].parentEmail = parentUser.email;
+      await createdStudents[0].save();
+      
       console.log('✅ Linked student to parent\n');
     }
 
@@ -195,6 +211,15 @@ const seedDatabase = async () => {
           viaFacialRecognition: Math.random() > 0.3,
           recordedBy: randomTeacher ? randomTeacher._id : null,
           recordedByName: randomTeacher ? randomTeacher.username : 'Unknown',
+          // Email notification fields
+          parentNotified: false,
+          parentNotificationTime: null,
+          parentNotificationStatus: null,
+          // SMS notification fields
+          smsNotificationSent: false,
+          smsNotificationTime: null,
+          smsNotificationStatus: null,
+          smsTwilioMessageSid: null,
         });
       }
     }
