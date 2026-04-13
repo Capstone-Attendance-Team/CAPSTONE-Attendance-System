@@ -31,7 +31,7 @@ function Login() {
 		return () => clearInterval(interval);
 	}, [backgroundImages.length]);
 
-	// Keep backend awake by pinging it every 1 minute
+	// Keep backend awake by pinging it every 30 seconds
 	useEffect(() => {
 		const pingBackend = () => {
 			fetch(`${process.env.REACT_APP_API_URL}/`, { method: 'GET' })
@@ -41,8 +41,8 @@ function Login() {
 		// Ping immediately on mount
 		pingBackend();
 
-		// Then ping every 1 minute to keep backend warm
-		const pingInterval = setInterval(pingBackend, 1 * 60 * 1000);
+		// Then ping every 30 seconds to keep backend always warm
+		const pingInterval = setInterval(pingBackend, 30 * 1000);
 
 		return () => clearInterval(pingInterval);
 	}, []);
