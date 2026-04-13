@@ -31,6 +31,22 @@ function Login() {
 		return () => clearInterval(interval);
 	}, [backgroundImages.length]);
 
+	// Keep backend awake by pinging it every 5 minutes
+	useEffect(() => {
+		const pingBackend = () => {
+			fetch(`${process.env.REACT_APP_API_URL}/`, { method: 'GET' })
+				.catch(() => {}); // Ignore errors silently
+		};
+
+		// Ping immediately on mount
+		pingBackend();
+
+		// Then ping every 5 minutes
+		const pingInterval = setInterval(pingBackend, 5 * 60 * 1000);
+
+		return () => clearInterval(pingInterval);
+	}, []);
+
 	let renderError = null;
 	try {
 		const handleSubmit = async (e) => {
@@ -162,7 +178,7 @@ function Login() {
 							Remember me
 						</label>
 						<button type="submit" className="login-button" disabled={isLoading}>
-							{isLoading ? 'Signing in...' : 'Sign In'}
+							{isLoading ? 'Signing in... (May take up to 30 seconds)' : 'Sign In'}
 						</button>
 						{/* Show error message */}
 						{errorMessage && <div className="error-message">{errorMessage}</div>}
